@@ -7,16 +7,14 @@
 
 %%
 
-
-"if"	{ return KW_IF; }
-[0-9]+	{ return LIT_INT; }
-[-;=+*,]	{ return yytext[0]; }
+"if"							{ return KW_IF; }
+[0-9]+							{ return LIT_INT; }
+[-;=+*,]						{ return yytext[0]; }
 ([-A-Za-z_]|"]")[-A-Za-z_0-9]*	{ return INDENTIFIER; }
-"//".*	
+"//".*
 [ \t]
-\n	{  ++lineNumber; }
-.	{ return TOKEN_UNKNOWN; }
-
+\n								{  ++lineNumber; }
+.								{ return TOKEN_UNKNOWN; }
 
 %%
 
@@ -24,7 +22,7 @@ int running = 1;
 
 
 int main (int argc, char **argv)
-	{
+{
 
 	if (argc < 2) 
 	{
@@ -41,32 +39,33 @@ int main (int argc, char **argv)
 	while(running)
 	{
 
-	tok = yylex();
+		tok = yylex();
 
-	if(!running)
-		break;
+		if(!running)
+			break;
 
-	fprintf(stderr, "[%d, ", lineNumber]
-	if (tok < 256)
-		fprintf(stderr, "%c] ", tok);
-	else
-	switch(tok)
-	{
-		case KW_IF: printf("[KW_IF]"); break;
-		case LIT_INT: printf("[LIT_INT]"); break;
-		case IDENTIFIER: printf("[identifier]"); break;
-		case TOKEN_UNKNOWN: printf("[ERROR: UNKNOWN]"); break;
-		default: printf("[ERROR: UNKNOWN LOKO]"); break;
-	}
+		fprintf(stderr, "[%d, ", lineNumber])
 
+		if (tok < 256)
+			fprintf(stderr, "%c] ", tok);
+
+		else
+			switch(tok)
+			{
+				case KW_IF: 		printf("[KW_IF]"); break;
+				case LIT_INT: 		printf("[LIT_INT]"); break;
+				case IDENTIFIER: 	printf("[identifier]"); break;
+				case TOKEN_UNKNOWN: printf("[ERROR: UNKNOWN]"); break;
+				default: 			printf("[ERROR: UNKNOWN LOKO]"); break;
+			}
 	}	
 
 	yylex();
 	exit(0);
 
-	}
+}
 
 int yywrap()
-	{
+{
 	return 1;
-	}
+}
