@@ -3,7 +3,9 @@
 # Trabalho de Compiladores
 
 Professor: Marcelo Johann.
+
 Disciplina: Compiladores (INF01147).
+
 Semestre: 2018/2.
 
 http://www.inf.ufrgs.br/~johann/comp
@@ -35,24 +37,31 @@ Esta primeira etapa do trabalho consiste em fazer um analisador léxico utilizan
 ## Funcionalidades
 
 * reconhecer as expressões regulares que descrevem cada tipo de lexema;
+
 Status: não implementada.
 
 * classificar os lexemas reconhecidos em tokens retornando as constantes definidas no arquivo tokens.h fornecido ou codigos ascii para caracteres simples;
+
 Status: não implementada.
 
 * incluir os identificadores e os literais (inteiros, caracteres e strings) em uma tabela de símbolos implementada com estrutura hash;
+
 Status: não implementada.
 
 * controlar o número de linha do arquivo fonte, e fornecer uma função declarada como int getLineNumber(void) a ser usada nos testes e pela futura análise sintática;
+
 Status: não implementada.
 
 * ignorar comentários no formato C99 de única linha e múltiplas linhas;
+
 Status: não implementada.
 
 * informar erro léxico ao encontrar caracteres inválidos na entrada, retornando o token de erro;
+
 Status: não implementada.
 
 * definir e atualizar uma variável global e uma função int isRunning(void), que mantém e retorna valor true (diferente de 0) durante a análise e muda para false (igual a 0) ao encontrar a marca de fim de arquivo; 
+
 Status: não implementada.
 
 ## Descrição dos tokens 
