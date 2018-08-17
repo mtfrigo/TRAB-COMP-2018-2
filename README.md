@@ -1,8 +1,4 @@
-# 
 
-* lex scanner.l input.txt
-* gcc lex.yy.c
-* ./a.out input.txt
 
 # Trabalho de Compiladores
 
@@ -24,7 +20,14 @@ Install LEX.
 sudo apt-get install flex
 ```
 
-## Running the tests
+## Running
+
+
+```
+lex scanner.l input.txt
+gcc lex.yy.c
+./a.out input.txt
+```
 
 --
 
