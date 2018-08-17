@@ -465,7 +465,8 @@ char *yytext;
 
 int lineNumber = 1;
 
-#line 469 "lex.yy.c"
+#include "hash.c"
+#line 470 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -683,11 +684,11 @@ YY_DECL
 		}
 
 	{
-#line 12 "scanner.l"
+#line 13 "scanner.l"
 
 
 
-#line 691 "lex.yy.c"
+#line 692 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -746,51 +747,51 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "scanner.l"
+#line 16 "scanner.l"
 { return KW_IF; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 16 "scanner.l"
-{ return LIT_INT; }
+#line 17 "scanner.l"
+{ hashInsert(0, yytext); return LIT_INT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 17 "scanner.l"
+#line 18 "scanner.l"
 { return yytext[0]; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 18 "scanner.l"
+#line 19 "scanner.l"
 { return IDENTIFIER; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 19 "scanner.l"
+#line 20 "scanner.l"
 
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 20 "scanner.l"
+#line 21 "scanner.l"
 
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 21 "scanner.l"
+#line 22 "scanner.l"
 {  ++lineNumber; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 22 "scanner.l"
+#line 23 "scanner.l"
 { return TOKEN_UNKNOWN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 25 "scanner.l"
+#line 26 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 794 "lex.yy.c"
+#line 795 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1791,7 +1792,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 25 "scanner.l"
+#line 26 "scanner.l"
 
 
 
@@ -1814,6 +1815,7 @@ int main (int argc, char **argv)
 		exit(2);
 	}
 
+	hashInit();
 	while(running)
 	{
 
@@ -1835,6 +1837,8 @@ int main (int argc, char **argv)
 				default: fprintf(stderr,"ERROR: UNKNOWN LOKO]"); break;
 			}
 	}	
+
+	hashPrint();
 
 	exit(0);
 

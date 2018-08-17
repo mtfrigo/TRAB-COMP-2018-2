@@ -7,13 +7,14 @@
 
 int lineNumber = 1;
 
+#include "hash.c"
 %}
 
 %%
 
 
 "if"							{ return KW_IF; }
-[0-9]+							{ return LIT_INT; }
+[0-9]+							{ hashInsert(0, yytext); return LIT_INT; }
 [-;=+*,]						{ return yytext[0]; }
 ([-A-Za-z_]|"]")[-A-Za-z_0-9]*	{ return IDENTIFIER; }
 "//".*	
@@ -43,6 +44,7 @@ int main (int argc, char **argv)
 		exit(2);
 	}
 
+	hashInit();
 	while(running)
 	{
 
@@ -64,6 +66,8 @@ int main (int argc, char **argv)
 				default: fprintf(stderr,"ERROR: UNKNOWN LOKO]"); break;
 			}
 	}	
+
+	hashPrint();
 
 	exit(0);
 
