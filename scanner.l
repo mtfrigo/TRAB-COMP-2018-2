@@ -1,77 +1,44 @@
 %{
 
-#define KW_IF 256
-#define LIT_INT 257
-#define IDENTIFIER 258
-#define TOKEN_UNKNOWN 259
+#include "token.h"
+#include "hash.h"
 
+int running = 1;
 int lineNumber = 1;
 
-#include "hash.c"
 %}
 
 %%
 
-
+"char"							{ return KW_CHAR; }
+"int"							{ return KW_INT; }
+"float"							{ return KW_FLOAT; }
 "if"							{ return KW_IF; }
-[0-9]+							{ hashInsert(0, yytext); return LIT_INT; }
-[-;=+*,]						{ return yytext[0]; }
-([-A-Za-z_]|"]")[-A-Za-z_0-9]*	{ return IDENTIFIER; }
+"then"							{ return KW_THEN; }
+"else"							{ return KW_ELSE; }
+"while"							{ return KW_WHILE; }
+"read"							{ return KW_READ; }
+"return"						{ return KW_RETURN; }
+"print"							{ return KW_PRINT; }
+"<="							{ return OPERATOR_LE; }
+">="							{ return OPERATOR_GE; }
+"=="							{ return OPERATOR_EQ; }
+"or"							{ return OPERATOR_OR; }
+"and"							{ return OPERATOR_AND; }
+"not"							{ return OPERATOR_NOT; }
+[-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
+[0-9].[0-9]						{ hashInsert(0, yytext); return LIT_FLOAT; }
+[ACE-OR-Zace-or-z]?				{ hashInsert(0, yytext); return LIT_CHAR; }
+"[-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*"						{ hashInsert(0, yytext); return LIT_STRING; }
+[-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*	{ return TK_IDENTIFIER; }
+[0-9]+							{ hashInsert(0, yytext); return LIT_INTEGER; }
+
 "//".*	
 [ \t]
 \n								{  ++lineNumber; }
-.								{ return TOKEN_UNKNOWN; }
-
+.								{ return TOKEN_ERROR; }
 
 %%
-
-int running = 1;
-
-int main (int argc, char **argv)
-{
-
-	int tok;
-
-	if (argc < 2) 
-	{
-		fprintf(stderr, "Call: a.out file_name\n");
-		exit(1);	
-	}
-
-	if ((yyin = fopen(argv[1], "r")) == 0)
-	{
-		fprintf(stderr, "Cannot open file \%s\"\n", argv[1]);
-		exit(2);
-	}
-
-	hashInit();
-	while(running)
-	{
-
-		tok = yylex();
-
-		if(!running)
-			break;
-
-		fprintf(stderr, "[%d, ", lineNumber);
-		if (tok < 256)
-			fprintf(stderr, "%c] ", tok);
-		else
-			switch(tok)
-			{
-				case KW_IF: fprintf(stderr,"KW_IF]"); break;
-				case LIT_INT: fprintf(stderr,"LIT_INT]"); break;
-				case IDENTIFIER: fprintf(stderr,"identifier]"); break;
-				case TOKEN_UNKNOWN: fprintf(stderr,"ERROR: UNKNOWN]"); break;
-				default: fprintf(stderr,"ERROR: UNKNOWN LOKO]"); break;
-			}
-	}	
-
-	hashPrint();
-
-	exit(0);
-
-}
 
 int yywrap()
 {

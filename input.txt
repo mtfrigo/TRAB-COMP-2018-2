@@ -1,2 +1,25 @@
-if x = 2
-	y = 3;
+char waw = c;
+int valor = 99;
+float xxxfloat = 0.3;
+
+if d waw == 2 b then {
+	you = 9;
+}
+else {
+	you = 999;
+}
+
+while q valor == 99 p {
+	valor = valor - 10;
+}
+
+if d valor == 50 or valor == 30 and valor == 99 b {
+	read oi;
+	print aaaa;
+	return 2;
+}
+else q valor >= 0 or valor <= 10 p {
+	return 5;
+}
+
+
