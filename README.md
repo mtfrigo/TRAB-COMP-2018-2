@@ -49,7 +49,7 @@ Status: OK.
 
 * classificar os lexemas reconhecidos em tokens retornando as constantes definidas no arquivo tokens.h fornecido ou codigos ascii para caracteres simples;
 
-Status: não implementada.
+Status: OK.
 
 * incluir os identificadores e os literais (inteiros, caracteres e strings) em uma tabela de símbolos implementada com estrutura hash;
 
@@ -57,11 +57,11 @@ Status: OK.
 
 * controlar o número de linha do arquivo fonte, e fornecer uma função declarada como int getLineNumber(void) a ser usada nos testes e pela futura análise sintática;
 
-Status: não implementada.
+Status: OK.
 
 * ignorar comentários no formato C99 de única linha e múltiplas linhas;
 
-Status: não implementada.
+Status: OK.
 
 * informar erro léxico ao encontrar caracteres inválidos na entrada, retornando o token de erro;
 
