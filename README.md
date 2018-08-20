@@ -65,11 +65,11 @@ Status: OK.
 
 * informar erro léxico ao encontrar caracteres inválidos na entrada, retornando o token de erro;
 
-Status: não implementada.
+Status: OK.
 
 * definir e atualizar uma variável global e uma função int isRunning(void), que mantém e retorna valor true (diferente de 0) durante a análise e muda para false (igual a 0) ao encontrar a marca de fim de arquivo; 
 
-Status: não implementada.
+Status: OK.
 
 ## Descrição dos tokens 
 
