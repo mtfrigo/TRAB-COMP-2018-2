@@ -1924,6 +1924,7 @@ void yyfree (void * ptr )
 
 int yywrap()
 {
+	fprintf(stderr, "Numero de linhas no final = %d", lineNumber);
 	running = 0;
 	return 1;
 }

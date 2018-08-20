@@ -23,5 +23,3 @@ else q valor >= 0 or valor <= 10 p {
 }
 
 texto = "OIOIOI" "LALLALA";
-
-
