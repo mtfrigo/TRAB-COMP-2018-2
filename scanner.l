@@ -29,12 +29,14 @@ int lineNumber = 1;
 "or"							{ return OPERATOR_OR; }
 "and"							{ return OPERATOR_AND; }
 "not"							{ return OPERATOR_NOT; }
+[0-9]*							{ hashInsert(3, yytext); return LIT_INTEGER; }
 [-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
-[0-9].[0-9]						{ hashInsert(0, yytext); return LIT_FLOAT; }
-[ACE-OR-Zace-or-z]?				{ hashInsert(1, yytext); return LIT_CHAR; }
+[-ACE-OR-Zace-or-z_0-9]*		{ hashInsert(4, yytext); return TK_IDENTIFIER; }
+\'[-ACE-OR-Zace-or-z]?\'		{ hashInsert(1, yytext); return LIT_CHAR; }
 \"[-ACE-OR-Zace-or-z_0-9]*\"	{ hashInsert(2, yytext); return LIT_STRING; }
-[-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*	{ return TK_IDENTIFIER; }
-[0-9]+							{ hashInsert(3, yytext); return LIT_INTEGER; }
+[0-9]*\.[0-9]*					{ hashInsert(0, yytext); return LIT_FLOAT; }
+
+
 
 "//".*
 
@@ -45,7 +47,7 @@ int lineNumber = 1;
 	
 [ \t]
 "\n" 							{  ++lineNumber; }
-.							{ return TOKEN_ERROR; }
+.								{ return TOKEN_ERROR; }
 
 %%
 

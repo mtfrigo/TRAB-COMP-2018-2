@@ -1,6 +1,6 @@
-char waw = c;
+char waw = 'c';
 int valor = 99;
-float xxxfloat = 99;
+float xxxfloat = 0.32;
 
 /*UHULL
 
@@ -27,4 +27,4 @@ else q valor >= 0 or valor <= 10 p {
 	return 5;
 }
 
-texto = "OIOIOI" "LALLALA";
+333rr = "OIOIOI" "LALLALA";
