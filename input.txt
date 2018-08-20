@@ -22,4 +22,6 @@ else q valor >= 0 or valor <= 10 p {
 	return 5;
 }
 
+texto = "OIOIOI" "LALLALA";
+
 
