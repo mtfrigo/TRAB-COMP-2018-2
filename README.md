@@ -29,6 +29,13 @@ gcc lex.yy.c
 ./a.out input.txt
 ```
 
+or 
+
+```
+make
+./etapa1 input.txt
+```
+
 # Etapa 1
 
 O trabalho consiste na implementação de um compilador funcional. 
@@ -38,7 +45,7 @@ Esta primeira etapa do trabalho consiste em fazer um analisador léxico utilizan
 
 * reconhecer as expressões regulares que descrevem cada tipo de lexema;
 
-Status: não implementada.
+Status: OK.
 
 * classificar os lexemas reconhecidos em tokens retornando as constantes definidas no arquivo tokens.h fornecido ou codigos ascii para caracteres simples;
 
@@ -46,7 +53,7 @@ Status: não implementada.
 
 * incluir os identificadores e os literais (inteiros, caracteres e strings) em uma tabela de símbolos implementada com estrutura hash;
 
-Status: não implementada.
+Status: Falta para string (qual a diferença de string e identificador?).
 
 * controlar o número de linha do arquivo fonte, e fornecer uma função declarada como int getLineNumber(void) a ser usada nos testes e pela futura análise sintática;
 
