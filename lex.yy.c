@@ -931,13 +931,13 @@ case 22:
 YY_RULE_SETUP
 #line 41 "scanner.l"
 {	*s = 0;
-		 	BEGIN 0;
-		  //printf("found ");
-		  //puts(buffer);
-		  	yytext = buffer;
-		  	hashInsert(2, yytext);
-		  	return LIT_STRING;
-		}
+									BEGIN 0;
+								//printf("found ");
+								//puts(buffer);
+									yytext = buffer;
+									hashInsert(2, yytext);
+									return LIT_STRING;
+								}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
@@ -2029,6 +2029,7 @@ int getLineNumber(void){
 int yywrap()
 {
 	running = 0;
+	fprintf(stderr, "Line count: %d ", lineNumber);
 	return 1;
 }
 
