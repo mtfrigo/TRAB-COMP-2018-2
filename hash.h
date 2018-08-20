@@ -1,5 +1,6 @@
 
 #define HASH_SIZE 997
+#define STRING_SIZE 100 
 
 typedef struct hash_node
 {
