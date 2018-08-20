@@ -508,8 +508,8 @@ char *yytext;
 #include "token.h"
 #include "hash.h"
 
-int running = 1;
-int lineNumber = 1;
+int running;
+int lineNumber;
 
 
 #line 516 "lex.yy.c"
@@ -1966,4 +1966,10 @@ int yywrap()
 {
 	running = 0;
 	return 1;
+}
+
+void initMe(void){
+	running = 1;
+	lineNumber = 1;
+	hashInit();
 }

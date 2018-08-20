@@ -1,6 +1,6 @@
 char waw = 'c';
 int valor = 99;
-float xxxfloat = 0.32;
+float xxxfloat = 10.32;
 
 /*UHULL
 
@@ -18,13 +18,11 @@ while q valor == 99 p {
 	valor = valor - 10;
 }
 
-if d valor == 50 or valor == 30 and valor == 99 b {
-	read oi;
-	print aaaa;
+if q valor >= 0 or valor <= 10 p {
+	read "oi";
+	print "aaaa";
 	return 2;
-}
-else q valor >= 0 or valor <= 10 p {
-	return 5;
 }
 
 333rr = "OIOIOI" "LALLALA";
+()
