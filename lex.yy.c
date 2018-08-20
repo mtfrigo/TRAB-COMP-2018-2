@@ -874,12 +874,12 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 31 "scanner.l"
-{ hashInsert(0, yytext); return LIT_CHAR; }
+{ hashInsert(1, yytext); return LIT_CHAR; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 32 "scanner.l"
-{ hashInsert(0, yytext); return LIT_STRING; }
+{ hashInsert(2, yytext); return LIT_STRING; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
@@ -889,7 +889,7 @@ YY_RULE_SETUP
 case 22:
 YY_RULE_SETUP
 #line 34 "scanner.l"
-{ hashInsert(0, yytext); return LIT_INTEGER; }
+{ hashInsert(3, yytext); return LIT_INTEGER; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
@@ -1922,10 +1922,16 @@ void yyfree (void * ptr )
 
 
 
+int isRunning(void){
+	return running;
+}
+
+int getLineNumber(void){
+	return lineNumber;
+}
+
 int yywrap()
 {
-	fprintf(stderr, "Numero de linhas no final = %d", lineNumber);
 	running = 0;
 	return 1;
 }
-

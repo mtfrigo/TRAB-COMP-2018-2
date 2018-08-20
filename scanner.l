@@ -28,10 +28,10 @@ int lineNumber = 1;
 "not"							{ return OPERATOR_NOT; }
 [-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
 [0-9].[0-9]						{ hashInsert(0, yytext); return LIT_FLOAT; }
-[ACE-OR-Zace-or-z]?				{ hashInsert(0, yytext); return LIT_CHAR; }
-\"[-ACE-OR-Zace-or-z_0-9]*\"						{ hashInsert(0, yytext); return LIT_STRING; }
+[ACE-OR-Zace-or-z]?				{ hashInsert(1, yytext); return LIT_CHAR; }
+\"[-ACE-OR-Zace-or-z_0-9]*\"	{ hashInsert(2, yytext); return LIT_STRING; }
 [-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*	{ return TK_IDENTIFIER; }
-[0-9]+							{ hashInsert(0, yytext); return LIT_INTEGER; }
+[0-9]+							{ hashInsert(3, yytext); return LIT_INTEGER; }
 
 "//".*	
 [ \t]
@@ -39,6 +39,14 @@ int lineNumber = 1;
 .								{ return TOKEN_ERROR; }
 
 %%
+
+int isRunning(void){
+	return running;
+}
+
+int getLineNumber(void){
+	return lineNumber;
+}
 
 int yywrap()
 {

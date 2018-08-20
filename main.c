@@ -5,6 +5,7 @@
 int yylex(void);
 void hashInit(void);
 void hashPrint(void);
+int isRunning(void);
 extern char *yytext;
 extern FILE *yyin;
 extern int running;
@@ -33,12 +34,12 @@ int main (int argc, char **argv)
 
 		tok = yylex();
 
-		if(!running)
+		if(!isRunning())
 			break;
 
 		fprintf(stderr, "[%d, ", lineNumber);
 		if (tok < 256)
-			fprintf(stderr, "%c]\n", tok);
+			fprintf(stderr, "%c, %d]\n", tok, tok);
 		else
 			switch(tok)
 			{
