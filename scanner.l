@@ -3,15 +3,10 @@
 #include "token.h"
 #include "hash.h"
 
-<<<<<<< HEAD
-int running;
-int lineNumber;
-=======
 char *s;
 char buffer[STRING_SIZE];
-int running = 1;
-int lineNumber = 1;
->>>>>>> 49d79d64dc1e036990279122051a561790e67eb2
+int running;
+int lineNumber;
 
 %}
 
@@ -88,12 +83,9 @@ int yywrap()
 	running = 0;
 	return 1;
 }
-<<<<<<< HEAD
 
 void initMe(void){
 	running = 1;
 	lineNumber = 1;
 	hashInit();
 }
-=======
->>>>>>> 49d79d64dc1e036990279122051a561790e67eb2
