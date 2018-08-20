@@ -53,7 +53,7 @@ Status: não implementada.
 
 * incluir os identificadores e os literais (inteiros, caracteres e strings) em uma tabela de símbolos implementada com estrutura hash;
 
-Status: Falta para string (qual a diferença de string e identificador?).
+Status: OK.
 
 * controlar o número de linha do arquivo fonte, e fornecer uma função declarada como int getLineNumber(void) a ser usada nos testes e pela futura análise sintática;
 
