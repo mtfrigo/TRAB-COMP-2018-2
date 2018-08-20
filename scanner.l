@@ -32,7 +32,7 @@ int lineNumber = 1;
 [-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
 [0-9].[0-9]						{ hashInsert(0, yytext); return LIT_FLOAT; }
 [ACE-OR-Zace-or-z]?				{ hashInsert(0, yytext); return LIT_CHAR; }
-"[-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*"						{ hashInsert(0, yytext); return LIT_STRING; }
+\"[-ACE-OR-Zace-or-z_0-9]*\"						{ hashInsert(0, yytext); return LIT_STRING; }
 [-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*	{ return TK_IDENTIFIER; }
 [0-9]+							{ hashInsert(0, yytext); return LIT_INTEGER; }
 
