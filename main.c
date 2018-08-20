@@ -19,7 +19,7 @@ int main (int argc, char **argv)
 	if (argc < 2) 
 	{
 		fprintf(stderr, "Call: a.out file_name\n");
-		exit(1);	
+		exit(1);
 	}
 
 	if ((yyin = fopen(argv[1], "r")) == 0)
@@ -29,7 +29,7 @@ int main (int argc, char **argv)
 	}
 
 	hashInit();
-	while(running)
+	while(isRunning())
 	{
 
 		tok = yylex();

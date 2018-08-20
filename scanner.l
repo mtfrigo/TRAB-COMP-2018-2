@@ -8,6 +8,9 @@ int lineNumber = 1;
 
 %}
 
+
+%x COMMENT
+
 %%
 
 "char"							{ return KW_CHAR; }
@@ -33,10 +36,16 @@ int lineNumber = 1;
 [-ACE-OR-Zace-or-z_][-ACE-OR-Zace-or-z_0-9]*	{ return TK_IDENTIFIER; }
 [0-9]+							{ hashInsert(3, yytext); return LIT_INTEGER; }
 
-"//".*	
+"//".*
+
+"/*" 		{ BEGIN(COMMENT); }
+<COMMENT>"*/" 	{ BEGIN(INITIAL); }
+<COMMENT>"\n" 	{ ++lineNumber;   }
+<COMMENT>.
+	
 [ \t]
-\n								{  ++lineNumber; }
-.								{ return TOKEN_ERROR; }
+"\n" 							{  ++lineNumber; }
+.							{ return TOKEN_ERROR; }
 
 %%
 

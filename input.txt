@@ -2,7 +2,12 @@ char waw = c;
 int valor = 99;
 float xxxfloat = 99;
 
-if d waw == 2 b then {
+/*UHULL
+
+
+oi*/
+
+if d waw == 2 b then { //oi
 	you = 9;
 }
 else {
