@@ -1,11 +1,10 @@
 %{
 
-#include "y.tab.h"
+#include "token.h"
 #include "hash.h"
 
 char *s;
 char buffer[STRING_SIZE];
-
 int running;
 int lineNumber;
 
@@ -17,7 +16,6 @@ int lineNumber;
 
 %%
 
-"<-"							{ return OPERATOR_ATTRIB; }
 "char"							{ return KW_CHAR; }
 "int"							{ return KW_INT; }
 "float"							{ return KW_FLOAT; }
