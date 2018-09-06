@@ -66,8 +66,9 @@
 
 	#include <stdio.h>
 	#include <stdlib.h>
+	int getLineNumber(void);
 
-#line 71 "y.tab.c" /* yacc.c:339  */
+#line 72 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -159,11 +160,11 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 6 "parser.y" /* yacc.c:355  */
+#line 7 "parser.y" /* yacc.c:355  */
 
 	int value;
 
-#line 167 "y.tab.c" /* yacc.c:355  */
+#line 168 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -180,7 +181,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 184 "y.tab.c" /* yacc.c:358  */
+#line 185 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -480,8 +481,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    37,    37,    40,    41,    44,    45,    48,    49,    50,
-      51,    52,    53,    54,    55
+       0,    38,    38,    41,    42,    45,    46,    49,    50,    51,
+      52,    53,    54,    55,    56
 };
 #endif
 
@@ -1271,13 +1272,13 @@ yyreduce:
   switch (yyn)
     {
         case 7:
-#line 48 "parser.y" /* yacc.c:1646  */
-    { fprintf(stderr, "Achei LIT_INT", (yyvsp[0].value)); }
-#line 1277 "y.tab.c" /* yacc.c:1646  */
+#line 49 "parser.y" /* yacc.c:1646  */
+    { fprintf(stderr, "Achei LIT_INT %d", (yyvsp[0].value)); }
+#line 1278 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1281 "y.tab.c" /* yacc.c:1646  */
+#line 1282 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1505,7 +1506,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 58 "parser.y" /* yacc.c:1906  */
+#line 59 "parser.y" /* yacc.c:1906  */
 
 
 int yyerror(char *msg){

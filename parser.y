@@ -1,6 +1,7 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
+	int getLineNumber(void);
 %}
 
 %union {
@@ -45,7 +46,7 @@ cmd	: KW_IF expr cmd
 	| TK_IDENTIFIER OPERATOR_ATTRIB expr ';'
 	;
 
-expr	: LIT_INTEGER	{ fprintf(stderr, "Achei LIT_INT", $1); }
+expr	: LIT_INTEGER	{ fprintf(stderr, "Achei LIT_INT %d", $1); }
 	| TK_IDENTIFIER
 	| expr '+' expr
 	| expr '-' expr
