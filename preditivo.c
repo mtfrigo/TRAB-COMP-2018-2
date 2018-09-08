@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #define TRUE 1
 #define FALSE 0
 
@@ -31,9 +32,9 @@ int le_tok(){
 int main(){
     printf("Sou um analisador...\n");
     tok = le_tok();
-    if(func_cmd())
+    if(func_CMD())
         if(tok == '$')
-            printf("Success! hh");
+            printf("Success! CARALHO\n");
         else
             printf("Ok, ok, but there is waste at the end!\n");
     else
@@ -93,7 +94,16 @@ int func_WHI(){
 }
 
 int func_CMDL(){
+    printf("Sou uma CMDL: tok = %d\n", tok);
 
+    if(func_CMD()){
+        if(func_RESTO())
+            return TRUE;
+        else
+            return FALSE;
+    }
+    else 
+        return FALSE;
 }
 
 int func_ASS(){
@@ -131,7 +141,7 @@ int func_L(){
 }
 
 int func_E(){
-    printf("Sou uma E: %d\n", tok);
+    printf("Sou uma E: tok = %d\n", tok);
     if( tok == NUM || tok == ID){
         tok = le_tok();
         return TRUE;
@@ -141,12 +151,12 @@ int func_E(){
 }
 
 int func_BL(){
-    printf("Sou uma BL: %d\n", tok);
+    printf("Sou uma BL: tok = %d\n", tok);
     if(tok == '{'){
         tok = le_tok();
-        if(func_CMDL){
+        if(func_CMDL()){
             if(tok == '}'){
-                tok == le_tok();
+                tok = le_tok();
                 return TRUE;
             }
             else
@@ -160,7 +170,7 @@ int func_BL(){
 }
 
 int func_RESTO(){
-    printf("Sou uma RESTO: %d\n", tok);
+    printf("Sou uma RESTO: tok = %d\n", tok);
     if(tok == ';'){
         tok = le_tok();
         if(func_CMDL())
