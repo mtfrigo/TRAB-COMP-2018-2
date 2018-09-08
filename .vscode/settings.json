@@ -3,6 +3,7 @@
         "hash.h": "c",
         "stdio.h": "c",
         "stdlib.h": "c",
-        "token.h": "c"
+        "token.h": "c",
+        "y.tab.h": "c"
     }
 }

@@ -4,6 +4,7 @@
 
 int yylex(void);
 void hashPrint(void);
+void printToken(int);
 int isRunning(void);
 void initMe(void);
 
@@ -29,6 +30,8 @@ int main (int argc, char **argv)
 	}
 
 	initMe();
+	
+	yyparse();
 
 	while(isRunning())
 	{
@@ -37,7 +40,18 @@ int main (int argc, char **argv)
 		if(!isRunning())
 			break;
 
-		fprintf(stderr, "[%d, ", lineNumber);
+		//printToken(tok);
+	}	
+
+	// hashPrint();
+
+	fprintf(stderr, "Codigo aceito pela gramatica Gerofrigolicius!!!:\n");
+	exit(0);
+
+}
+
+void printToken(int tok){
+	fprintf(stderr, "[%d, ", lineNumber);
 		if (tok < 256)
 			fprintf(stderr, "%c, %d]\n", tok, tok);
 		else
@@ -67,10 +81,4 @@ int main (int argc, char **argv)
 				case TOKEN_ERROR: fprintf(stderr,"TOKEN_ERROR, %d]\n", TOKEN_ERROR); break;
 				default: fprintf(stderr,"ERROR: UNKNOWN LOKO]\n"); break;
 			}
-	}	
-
-	hashPrint();
-
-	exit(0);
-
 }

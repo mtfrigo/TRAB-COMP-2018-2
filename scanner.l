@@ -83,7 +83,6 @@ int getLineNumber(void){
 int yywrap()
 {
 	running = 0;
-	fprintf(stderr, "Line count: %d ", lineNumber);
 	return 1;
 }
 

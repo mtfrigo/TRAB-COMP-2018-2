@@ -1,0 +1,24 @@
+int a = 0;
+int i = 0;
+int v q10p: 0 0 0 0 0 0 0 0 0 0; 
+int mat q10p; 
+float f = 10.55;
+char c = 'x';
+char x = 65;
+
+int main db
+  {
+  a = 7;
+  v qap = 90;
+  print vqap;
+  print "Digite um numero: \n";
+
+  read a;
+
+  while i<<10
+    {
+    i = incndi,1b;
+    a = incnda,1b;
+    };
+  
+  }

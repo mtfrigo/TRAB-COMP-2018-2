@@ -2,6 +2,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	int getLineNumber(void);
+	int yylex();
+	int yyerror();
 %}
 
 %union {
@@ -35,23 +37,70 @@
 
 %%
 
-program : cmdlist
+program : cmdlist	
 	;
 
-cmdlist : cmd cmdlist
+cmdlist : cmd cmdlist 
 	|
 	;
 
-cmd	: KW_IF expr cmd
-	| TK_IDENTIFIER OPERATOR_ATTRIB expr ';'
+cmd	: KW_IF expr cmd 	 
+	| atrib
+	| type 'd' 'b' block
+	| KW_WHILE 'd' expr 'b' block ';'
+	| KW_WHILE expr block ';'
+	| TK_IDENTIFIER '=' expr ';'
+	| TK_IDENTIFIER expr '=' expr ';'
+	| KW_PRINT expr ';'
+	| KW_READ expr ';'
 	;
 
-expr	: LIT_INTEGER	{ fprintf(stderr, "Achei LIT_INT %d", $1); }
+block : '{' block
+	| cmdlist block
+	| '}'
+	;
+
+atrib : type '=' expr ';'
+	| type 'q' expr 'p' array ';'
+	| type '=' "'" LIT_CHAR "'" ';'
+	| type '=' LIT_CHAR ';'
+	;
+
+array : ':' array
+	| expr array
+	|
+	;
+
+type : KW_INT TK_IDENTIFIER
+	| KW_FLOAT TK_IDENTIFIER
+	| KW_CHAR TK_IDENTIFIER
+	;
+
+param : expr param
+	| ',' param
+	|
+	;
+
+expr : LIT_INTEGER
+	| LIT_FLOAT
+	| LIT_STRING
 	| TK_IDENTIFIER
+	| expr '.' expr
 	| expr '+' expr
 	| expr '-' expr
 	| expr '=' expr
 	| expr '*' expr
+	| expr '<' expr
+	| expr '>' expr
+	| expr OPERATOR_AND expr
+	| expr OPERATOR_GE expr
+	| expr OPERATOR_LE expr
+	| expr OPERATOR_EQ expr
+	| expr OPERATOR_NOT expr
+	| expr OPERATOR_OR expr
+	| 'q' expr 'p'
+	| TK_IDENTIFIER 'q' expr 'p'
+	| TK_IDENTIFIER 'd' param 'b'
 	| TK_IDENTIFIER '(' expr ')'
 	| '(' expr ')'
 	;
