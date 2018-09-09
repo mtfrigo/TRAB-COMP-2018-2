@@ -46,8 +46,7 @@ cmdlist : cmd cmdlist
 
 cmd	: KW_IF expr cmd
 	| KW_THEN cmd
-	| KW_THEN KW_ELSE ';'
-	| KW_THEN KW_ELSE cmd
+	| KW_ELSE cmd
 	| atrib
 	| type 'd' param 'b' '{' block
 	| KW_WHILE 'd' expr 'b' '{' block ';'
@@ -55,11 +54,12 @@ cmd	: KW_IF expr cmd
 	| TK_IDENTIFIER '=' expr ';'
 	| TK_IDENTIFIER expr '=' expr ';'
 	| KW_PRINT print ';'
-	| KW_READ expr ';'
+	| KW_READ TK_IDENTIFIER ';'
 	| KW_RETURN expr ';'
 	| ';'
 	| '{' block
 	;
+
 
 print : LIT_STRING print
 	| ',' print
@@ -103,13 +103,14 @@ expr : LIT_INTEGER
 	| expr '-' expr
 	| expr '=' expr
 	| expr '*' expr
+	| expr '/' expr
 	| expr '<' expr
 	| expr '>' expr
 	| expr OPERATOR_AND expr
 	| expr OPERATOR_GE expr
 	| expr OPERATOR_LE expr
 	| expr OPERATOR_EQ expr
-	| expr OPERATOR_NOT expr
+	| OPERATOR_NOT expr
 	| expr OPERATOR_OR expr
 	| 'q' expr 'p'
 	| 'd' expr 'b'

@@ -1,12 +1,17 @@
 int a = 0;
 int i = 0;
-int v q10p: 0 0 0 0 0 0 0 0 0 0; 
+
+
+int v q10p: 0 0 0 0 0 0 0 0 0 0;
+int v q550p;
+v qsp = 25;
+float v q5p: 0 2.5 1.35;
 int mat q10p; 
 float f = 10.55;
 char c = 'x';
 char x = 65;
 
-int main db
+int main d int argc, char argv q2p b
   {
   a = 7;
   v qap = 90;
@@ -14,7 +19,7 @@ int main db
 
   print "Digite um numero: \n";
   read a;
-  while i<10
+  while di<10b
     {
     i = incndi,1b;
     a = incnda,1b;
@@ -28,10 +33,19 @@ int main db
   if d a==11 or a== 17 b then
     print "Var a ficou 11 ou 17\n";
 
-  if da==10b then else
-    ;
+  if a==10 then {
+    print "Var a ficou 11 ou 17\n";
+  }
+  else {
+    print "Var a ficou 11 ou 17\n";
+  }
+
+  int x = 1 / d5 * d2 + 5bb;
+  int x = not true;
+  int x = a or d c and c b;
+
   ;;;
-  {;};
+  {int x = 2;};
   {};
   }
 

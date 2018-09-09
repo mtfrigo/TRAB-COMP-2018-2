@@ -7,6 +7,7 @@ void hashPrint(void);
 void printToken(int);
 int isRunning(void);
 void initMe(void);
+int getLineNumber(void);
 
 extern char *yytext;
 extern FILE *yyin;
@@ -17,36 +18,28 @@ int main (int argc, char **argv)
 {
 	int tok;
 
-	if (argc < 2) 
-	{
+	if (argc < 2) {
 		fprintf(stderr, "Call: a.out file_name\n");
 		exit(1);
 	}
 
-	if ((yyin = fopen(argv[1], "r")) == 0)
-	{
+	if ((yyin = fopen(argv[1], "r")) == 0){
 		fprintf(stderr, "Cannot open file \%s\"\n", argv[1]);
 		exit(2);
 	}
 
 	initMe();
 	
-	yyparse();
+	int result = yyparse();
 
-	while(isRunning())
-	{
-		tok = yylex();
-
-		if(!isRunning())
-			break;
-
-		//printToken(tok);
-	}	
-
-	// hashPrint();
-
-	fprintf(stderr, "Codigo aceito pela gramatica Gerofrigolicius!!!:\n");
-	exit(0);
+	if(result == 0){
+        fprintf(stderr, "Codigo aceito pela gramatica Gerofrigolicius!!!:\n");
+        exit(0);
+    } 
+	else {
+        fprintf(stderr, "Error parsing the source code on line %d\n", getLineNumber());
+        exit(3);
+    }	
 
 }
 
