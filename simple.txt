@@ -15,10 +15,29 @@ int main db
 
   read a;
 
-  while i<<10
+  while i<10
     {
     i = incndi,1b;
     a = incnda,1b;
     };
+
+  print "Incrementado algumas vezes fica ",a,"\n";
+
+  if a==5 then 
+    print "Parou no meio\n";
+
+  if d a==11 or a== 17 b then
+    print "Var a ficou 11 ou 17\n";
+
+  if da==10b then else
+    ;
   
+  {};
+
+
+  }
+
+  int incn d int x, int y b
+  {
+  return x+n;
   }

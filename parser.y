@@ -37,25 +37,37 @@
 
 %%
 
-program : cmdlist	
+program : cmdlist	 
 	;
 
 cmdlist : cmd cmdlist 
 	|
 	;
 
-cmd	: KW_IF expr cmd 	 
+cmd	: KW_IF expr cmd
+	| KW_THEN cmd
+	| KW_THEN KW_ELSE ';'
+	| KW_THEN KW_ELSE cmd
 	| atrib
-	| type 'd' 'b' block
+	| type 'd' param 'b' block
 	| KW_WHILE 'd' expr 'b' block ';'
 	| KW_WHILE expr block ';'
 	| TK_IDENTIFIER '=' expr ';'
 	| TK_IDENTIFIER expr '=' expr ';'
-	| KW_PRINT expr ';'
+	| KW_PRINT print ';'
 	| KW_READ expr ';'
+	| KW_RETURN expr ';'
+	| ';'
 	;
 
-block : '{' block
+print : LIT_STRING print
+	| ',' print
+	| TK_IDENTIFIER print
+	| expr print
+	|
+	;
+
+block : '{' block   
 	| cmdlist block
 	| '}'
 	;
@@ -78,6 +90,7 @@ type : KW_INT TK_IDENTIFIER
 
 param : expr param
 	| ',' param
+	| type param
 	|
 	;
 
@@ -99,10 +112,9 @@ expr : LIT_INTEGER
 	| expr OPERATOR_NOT expr
 	| expr OPERATOR_OR expr
 	| 'q' expr 'p'
+	| 'd' expr 'b'
 	| TK_IDENTIFIER 'q' expr 'p'
 	| TK_IDENTIFIER 'd' param 'b'
-	| TK_IDENTIFIER '(' expr ')'
-	| '(' expr ')'
 	;
 
 %%
