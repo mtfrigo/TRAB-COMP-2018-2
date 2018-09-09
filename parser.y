@@ -49,15 +49,16 @@ cmd	: KW_IF expr cmd
 	| KW_THEN KW_ELSE ';'
 	| KW_THEN KW_ELSE cmd
 	| atrib
-	| type 'd' param 'b' block
-	| KW_WHILE 'd' expr 'b' block ';'
-	| KW_WHILE expr block ';'
+	| type 'd' param 'b' '{' block
+	| KW_WHILE 'd' expr 'b' '{' block ';'
+	| KW_WHILE expr '{' block ';'
 	| TK_IDENTIFIER '=' expr ';'
 	| TK_IDENTIFIER expr '=' expr ';'
 	| KW_PRINT print ';'
 	| KW_READ expr ';'
 	| KW_RETURN expr ';'
 	| ';'
+	| '{' block
 	;
 
 print : LIT_STRING print
@@ -67,8 +68,7 @@ print : LIT_STRING print
 	|
 	;
 
-block : '{' block   
-	| cmdlist block
+block : cmdlist block
 	| '}'
 	;
 
