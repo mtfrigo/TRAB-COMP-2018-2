@@ -164,9 +164,14 @@ union YYSTYPE
 {
 #line 9 "parser.y" /* yacc.c:355  */
 
-	int value;
+	int intValue;
+	float floatValue;
+	char *stringValue;
+	char *identValue;
+	char charValue;
+	struct hash_node* symbol;
 
-#line 170 "y.tab.c" /* yacc.c:355  */
+#line 175 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -183,7 +188,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 187 "y.tab.c" /* yacc.c:358  */
+#line 192 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -483,13 +488,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    40,    40,    43,    44,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    64,
-      65,    66,    67,    68,    71,    72,    75,    76,    77,    78,
-      81,    82,    83,    86,    87,    88,    91,    92,    93,    94,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118
+       0,    45,    45,    48,    49,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    69,
+      70,    71,    72,    73,    76,    77,    80,    81,    82,    83,
+      86,    87,    88,    91,    92,    93,    96,    97,    98,    99,
+     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
+     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
+     122,   123
 };
 #endif
 
@@ -1460,7 +1465,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1464 "y.tab.c" /* yacc.c:1646  */
+#line 1469 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1688,7 +1693,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 121 "parser.y" /* yacc.c:1906  */
+#line 126 "parser.y" /* yacc.c:1906  */
 
 
 int yyerror(char *msg){

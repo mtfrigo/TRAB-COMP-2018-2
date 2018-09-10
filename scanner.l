@@ -34,7 +34,8 @@ int lineNumber;
 "or"							{ return OPERATOR_OR; }
 "and"							{ return OPERATOR_AND; }
 "not"							{ return OPERATOR_NOT; }
-[0-9]*							{ hashInsert(3, yytext); return LIT_INTEGER; }
+[0-9]*							{ yylval.symbol = hashInsert(LIT_INTEGER, yytext); 
+								  yylval.intValue = atoi(yytext); return LIT_INTEGER; }
 [-,;:dbqp+*\{\}/<>=!&$#]		{ return yytext[0]; }
 
 \"								{ BEGIN(STRING); s = buffer;	}
@@ -45,7 +46,8 @@ int lineNumber;
 								//printf("found ");
 								//puts(buffer);
 									yytext = buffer;
-									hashInsert(2, yytext);
+									yylval.symbol = hashInsert(LIT_STRING, yytext);
+									yylval.stringValue = strdup(yytext);
 									return LIT_STRING;
 								}
 <STRING>\[-ACE-OR-Zace-or-z_0-9]*	{ *s++ = yytext[0];  }
@@ -53,9 +55,12 @@ int lineNumber;
 <STRING>.	{ *s++ = *yytext;   	}
 
 
-[-ACE-OR-Zace-or-z_0-9]*		{ hashInsert(4, yytext); return TK_IDENTIFIER; }
-\'[-ACE-OR-Zace-or-z]?\'		{ hashInsert(1, yytext); return LIT_CHAR; }
-[0-9]*\.[0-9]*					{ hashInsert(0, yytext); return LIT_FLOAT; }
+[-ACE-OR-Zace-or-z_0-9]*		{ yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); 
+								  yylval.identValue = strdup(yytext); return TK_IDENTIFIER; }
+\'[-ACE-OR-Zace-or-z]?\'		{ yylval.symbol = hashInsert(LIT_CHAR, yytext);
+								  yylval.charValue = yytext[0]; return LIT_CHAR; }
+[0-9]*\.[0-9]*					{ yylval.symbol = hashInsert(LIT_FLOAT, yytext); 
+								  yylval.floatValue = atof(yytext); return LIT_FLOAT; }
 
 
 

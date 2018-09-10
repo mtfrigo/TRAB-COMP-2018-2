@@ -7,7 +7,12 @@
 %}
 
 %union {
-	int value;
+	int intValue;
+	float floatValue;
+	char *stringValue;
+	char *identValue;
+	char charValue;
+	struct hash_node* symbol;
 }
 
 %token KW_CHAR
@@ -26,11 +31,11 @@
 %token OPERATOR_OR
 %token OPERATOR_AND
 %token OPERATOR_NOT
-%token TK_IDENTIFIER
-%token<value>  LIT_INTEGER
-%token LIT_FLOAT
-%token LIT_CHAR
-%token LIT_STRING
+%token<identValue> TK_IDENTIFIER
+%token<intValue> LIT_INTEGER
+%token<floatValue> LIT_FLOAT
+%token<charValue> LIT_CHAR
+%token<stringValue> LIT_STRING
 %token TOKEN_ERROR
 %token TOKEN_UNKNOWN
 %token OPERATOR_ATTRIB
