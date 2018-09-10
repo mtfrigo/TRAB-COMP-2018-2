@@ -49,38 +49,56 @@ cmdlist : cmd cmdlist
 	|
 	;
 
-cmd	: KW_IF expr cmd
-	| KW_THEN cmd
-	| KW_ELSE cmd
-	| atrib
-	| type 'd' param 'b' '{' block
-	| KW_WHILE 'd' expr 'b' '{' block ';'
-	| KW_WHILE expr '{' block ';'
+cmd	: KW_INT TK_IDENTIFIER  '=' expr ';'
+	| KW_INT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
+	| KW_INT TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
+
+	| KW_FLOAT TK_IDENTIFIER '=' expr ';'
+	| KW_FLOAT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
+	| KW_FLOAT TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
+
+	| KW_CHAR TK_IDENTIFIER '=' expr ';'
+	| KW_CHAR TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
+	| KW_CHAR TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
+
+	| TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' '=' expr ';'
 	| TK_IDENTIFIER '=' expr ';'
-	| TK_IDENTIFIER expr '=' expr ';'
-	| KW_PRINT print ';'
+
+	| KW_INT TK_IDENTIFIER 'd' param 'b' '{' cmdlist '}'
+
+	| KW_PRINT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
+	| KW_PRINT TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
+	| KW_PRINT param ';'
+
 	| KW_READ TK_IDENTIFIER ';'
 	| KW_RETURN expr ';'
+
+	| KW_WHILE 'd' expr 'b' '{' cmdlist '}' ';'
+	| KW_WHILE expr '{' cmdlist '}' ';'
+	
+	| TK_IDENTIFIER '=' TK_IDENTIFIER 'd' param 'b' ';'
+
+	| KW_IF expr KW_THEN cmd 
+	| KW_IF expr KW_THEN '{' cmdlist '}'  
+
+	| KW_IF 'd' expr 'b' KW_THEN cmd 
+	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' 
+
+	| KW_IF expr KW_THEN cmd KW_ELSE 
+	| KW_IF expr KW_THEN cmd KW_ELSE '{' cmdlist '}' 
+	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE
+	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}'
+
+	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE 
+	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE '{' cmdlist '}' 
+	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' KW_ELSE
+	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}'
+
 	| ';'
-	| '{' block
-	;
 
+	| '{' cmdlist '}' ';'
 
-print : LIT_STRING print
-	| ',' print
-	| TK_IDENTIFIER print
-	| expr print
-	|
-	;
-
-block : cmdlist block
-	| '}'
-	;
-
-atrib : type '=' expr ';'
-	| type 'q' expr 'p' array ';'
-	| type '=' "'" LIT_CHAR "'" ';'
-	| type '=' LIT_CHAR ';'
+	
 	;
 
 array : ':' array
@@ -88,40 +106,45 @@ array : ':' array
 	|
 	;
 
-type : KW_INT TK_IDENTIFIER
-	| KW_FLOAT TK_IDENTIFIER
-	| KW_CHAR TK_IDENTIFIER
-	;
+param : KW_INT TK_IDENTIFIER param
+	| KW_FLOAT TK_IDENTIFIER param
+	| KW_CHAR TK_IDENTIFIER param
 
-param : expr param
+	| KW_INT TK_IDENTIFIER 'q' LIT_INTEGER 'p' param
+	| KW_FLOAT TK_IDENTIFIER 'q' LIT_INTEGER 'p' param
+	| KW_CHAR TK_IDENTIFIER 'q' LIT_INTEGER 'p' param
+
+	| KW_INT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' param
+	| KW_FLOAT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' param
+	| KW_CHAR TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' param
+	
+	| expr param
+
 	| ',' param
-	| type param
 	|
 	;
 
 expr : LIT_INTEGER
 	| LIT_FLOAT
 	| LIT_STRING
+	| LIT_CHAR
 	| TK_IDENTIFIER
-	| expr '.' expr
 	| expr '+' expr
 	| expr '-' expr
-	| expr '=' expr
 	| expr '*' expr
 	| expr '/' expr
 	| expr '<' expr
 	| expr '>' expr
+	| expr OPERATOR_EQ expr
+	| expr OPERATOR_OR expr
 	| expr OPERATOR_AND expr
 	| expr OPERATOR_GE expr
 	| expr OPERATOR_LE expr
-	| expr OPERATOR_EQ expr
 	| OPERATOR_NOT expr
-	| expr OPERATOR_OR expr
-	| 'q' expr 'p'
 	| 'd' expr 'b'
-	| TK_IDENTIFIER 'q' expr 'p'
-	| TK_IDENTIFIER 'd' param 'b'
 	;
+	
+
 
 %%
 

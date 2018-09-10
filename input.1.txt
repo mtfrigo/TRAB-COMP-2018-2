@@ -29,7 +29,7 @@ int main d int argc, char argv q2p b
   if a==5 then 
     print "Parou no meio\n";
 
-  if d a==11 or a==17 b then
+  if d a==11 or a== 17 b then
     print "Var a ficou 11 ou 17\n";
 
   if a==10 then {
@@ -44,9 +44,8 @@ int main d int argc, char argv q2p b
   int x = a or d c and c b;
 
   ;;;
-  {};
   {int x = 2;};
-
+  {};
   }
 
 int incn d int x, int n b
