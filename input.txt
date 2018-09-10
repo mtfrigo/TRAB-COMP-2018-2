@@ -213,3 +213,6 @@ int incn d int x, int n b
 int main d int x, int n b{;}
 int main d int x, int asasasn b{;}
 int main d b{;}
+
+int hooleano = not d 2 > 1 or 1 < 2 or 5 == 5 and 2 >= 55 or 1 <= 0 b ;
+int inteiro = d 2 * d 5 + d 3 - d 22 - 5 + 2 * 1 / 6 b b / 5b b ;
