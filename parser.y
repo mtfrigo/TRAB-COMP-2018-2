@@ -56,7 +56,6 @@ type : KW_INT TK_IDENTIFIER
 cmd	: 
 
 	type '=' expr ';'
-	| type 'q' TK_IDENTIFIER 'p' array ';'
 	| type 'q' LIT_INTEGER 'p' array ';'
 
 	| TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' '=' expr ';'

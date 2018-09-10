@@ -4,19 +4,15 @@ int eai = 'c';
 int lala = 0.5;
 int lala = 555.2232;
 int v q10p : 0.5 2 1 'c' 999;
-int v qsalvep : 0.5 2 1 'c' 999;
 int mat q10p; 
-int mat qlolp; 
 
 char a = 0;
 char canana = 0;
 char eai = 'c';
 char lala = 0.5;
 char lala = 555.2232;
-char v qsalvep : 0.5 2 1 'c' 999;
-char v qsalvep : 0.5 2 1 'c' 999;
+char v q10p : 0.5 2 1 'c' 999;
 char mat q10p; 
-char mat qlolp; 
 
 float a = 0;
 float canana = 0;
@@ -24,9 +20,7 @@ float eai = 'c';
 float lala = 0.5;
 float lala = 555.2232;
 float v q10p : 0.5 2 1 'c' 999;
-float v qsalvep : 0.5 2 1 'c' 999;
 float mat q10p; 
-float mat qlolp; 
 
 v q4p = 25;
 v qsp = 25;
