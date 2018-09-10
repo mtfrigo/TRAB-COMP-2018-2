@@ -80,7 +80,7 @@ cmd	:
 	| TK_IDENTIFIER '=' TK_IDENTIFIER 'd' param 'b' ';'
 
 	| KW_IF expr KW_THEN cmd 
-	| KW_IF expr KW_THEN '{' cmdlist '}'  
+	| KW_IF expr KW_THEN '{' cmdlist '}'
 
 	| KW_IF 'd' expr 'b' KW_THEN cmd 
 	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' 
@@ -89,7 +89,7 @@ cmd	:
 	| KW_IF expr KW_THEN cmd KW_ELSE 
 	| KW_IF expr KW_THEN cmd KW_ELSE '{' cmdlist '}' 
 	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE
-	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}'
+	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}' 
 
 	| KW_IF 'd' expr 'b' KW_THEN KW_ELSE 
 	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE 
@@ -100,7 +100,6 @@ cmd	:
 	| ';'
 
 	| '{' cmdlist '}' ';'
-
 	
 	;
 
@@ -134,6 +133,7 @@ expr : LIT_INTEGER
 	| LIT_STRING
 	| LIT_CHAR
 	| TK_IDENTIFIER
+	| TK_IDENTIFIER expr
 	| expr '+' expr
 	| expr '-' expr
 	| expr '*' expr
@@ -147,6 +147,7 @@ expr : LIT_INTEGER
 	| expr OPERATOR_LE expr
 	| OPERATOR_NOT expr
 	| 'd' expr 'b'
+	| 'd' param 'b'
 	;
 	
 

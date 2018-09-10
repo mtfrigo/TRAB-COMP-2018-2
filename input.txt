@@ -42,6 +42,7 @@ print 'a';
 print 5;
 print "TEstando print simples: /\n";
 print "TEstando print lokao: /\n", 5, a, 0.5, 2 + 5, d 2 + 5 b, d 2 + 5 b * 3 / d 2 + 5 b , 'c', "1kiloooo";
+print d 2 + 5 b * 3 / d 2 + 5 b;
 
 read a;
 
@@ -100,14 +101,14 @@ if h == h then {
 }
 else {
   oi = 333333 ;
-}
+};
 
 if d h == h b then {
   oi = 333333 ;
 }
 else {
   oi = 333333 ;
-}
+};
 
 
 if h == h then 
@@ -216,3 +217,5 @@ int main d b{;}
 
 int hooleano = not d 2 > 1 or 1 < 2 or 5 == 5 and 2 >= 55 or 1 <= 0 b ;
 int inteiro = d 2 * d 5 + d 3 - d 22 - 5 + 2 * 1 / 6 b b / 5b b ;
+
+int hooleano = not d main d int x, int n b == 2 b;
