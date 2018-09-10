@@ -48,32 +48,32 @@ program : cmdlist
 cmdlist : cmd cmdlist 
 	|
 	;
-type : KW_INT TK_IDENTIFIER
-	| KW_FLOAT TK_IDENTIFIER
-	| KW_CHAR TK_IDENTIFIER
-	;
+
 
 cmd	: 
+	  KW_INT TK_IDENTIFIER  '=' expr ';'
+	| KW_INT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
+	| KW_INT TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
 
-	type '=' expr ';'
-	| type 'q' TK_IDENTIFIER 'p' array ';'
-	| type 'q' LIT_INTEGER 'p' array ';'
+	| KW_FLOAT TK_IDENTIFIER '=' expr ';'
+	| KW_FLOAT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
+	| KW_FLOAT TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
+
+	| KW_CHAR TK_IDENTIFIER '=' expr ';'
+	| KW_CHAR TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
+	| KW_CHAR TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
 
 	| TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' '=' expr ';'
-	| TK_IDENTIFIER 'q' LIT_INTEGER 'p' '=' expr ';'
 	| TK_IDENTIFIER '=' expr ';'
 
-	| type 'd' param 'b' '{' cmdlist '}'
+	| KW_INT TK_IDENTIFIER 'd' param 'b' '{' cmdlist '}'
 
 	| KW_PRINT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
 	| KW_PRINT TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
 	| KW_PRINT param ';'
 
 	| KW_READ TK_IDENTIFIER ';'
-	
 	| KW_RETURN expr ';'
-	| KW_RETURN TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
-	| KW_RETURN TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
 
 	| KW_WHILE 'd' expr 'b' '{' cmdlist '}' ';'
 	| KW_WHILE expr '{' cmdlist '}' ';'
@@ -86,13 +86,11 @@ cmd	:
 	| KW_IF 'd' expr 'b' KW_THEN cmd 
 	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' 
 
-	| KW_IF expr KW_THEN KW_ELSE 
 	| KW_IF expr KW_THEN cmd KW_ELSE 
 	| KW_IF expr KW_THEN cmd KW_ELSE '{' cmdlist '}' 
 	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE
 	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}'
 
-	| KW_IF 'd' expr 'b' KW_THEN KW_ELSE 
 	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE 
 	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE '{' cmdlist '}' 
 	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' KW_ELSE
