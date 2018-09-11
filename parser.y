@@ -75,7 +75,7 @@ cmd	:
 	| KW_RETURN TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
 
 	| KW_WHILE 'd' expr 'b' '{' cmdlist '}' ';'
-	| KW_WHILE expr '{' cmdlist '}' ';'
+	| KW_WHILE expr cmd
 	
 	| TK_IDENTIFIER '=' TK_IDENTIFIER 'd' param 'b' ';'
 

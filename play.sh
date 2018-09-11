@@ -2,4 +2,4 @@
 
 make clean
 make
-./etapa2 input.txt
+./etapa2 sad.txt
