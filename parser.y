@@ -40,118 +40,117 @@
 %token TOKEN_UNKNOWN
 %token OPERATOR_ATTRIB
 
+
+%start program
+%right '='
+%left OPERATOR_NOT OPERATOR_AND OPERATOR_OR
+%left OPERATOR_EQ OPERATOR_GE OPERATOR_LE '>' '<'
+%left '+' '-'
+%left '*' '/'
+%right KW_IF KW_THEN KW_ELSE
 %%
 
-program : cmdlist	 
+program 
+	: declaration
+	| program declaration
 	;
 
-cmdlist : cmd cmdlist 
-	|
-	;
-type : KW_INT TK_IDENTIFIER
-	| KW_FLOAT TK_IDENTIFIER
-	| KW_CHAR TK_IDENTIFIER
+declaration
+	: var_global ';'
+	| function
 	;
 
-cmd	: 
-
-	type '=' expr ';'
-	| type 'q' LIT_INTEGER 'p' array ';'
-
-	| TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' '=' expr ';'
-	| TK_IDENTIFIER 'q' LIT_INTEGER 'p' '=' expr ';'
-	| TK_IDENTIFIER '=' expr ';'
-
-	| type 'd' param 'b' '{' cmdlist '}'
-
-	| KW_PRINT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
-	| KW_PRINT TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
-	| KW_PRINT param ';'
-
-	| KW_READ TK_IDENTIFIER ';'
-	
-	| KW_RETURN expr ';'
-	| KW_RETURN TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
-	| KW_RETURN TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
-
-	| KW_WHILE 'd' expr 'b' '{' cmdlist '}' ';'
-	| KW_WHILE expr cmd
-	
-	| TK_IDENTIFIER '=' TK_IDENTIFIER 'd' param 'b' ';'
-
-	| KW_IF expr KW_THEN cmd 
-	| KW_IF expr KW_THEN '{' cmdlist '}'
-
-	| KW_IF 'd' expr 'b' KW_THEN cmd 
-	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' 
-
-	| KW_IF expr KW_THEN KW_ELSE 
-	| KW_IF expr KW_THEN cmd KW_ELSE 
-	| KW_IF expr KW_THEN cmd KW_ELSE '{' cmdlist '}' 
-	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE
-	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}' 
-
-	| KW_IF 'd' expr 'b' KW_THEN KW_ELSE 
-	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE 
-	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE '{' cmdlist '}' 
-	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' KW_ELSE
-	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}'
-
-	| ';'
-
-	| '{' cmdlist '}' ';'
-	
+var_global
+	: type TK_IDENTIFIER 'q' literal 'p'
+	| type TK_IDENTIFIER 'q' literal 'p' ':' lit_list
+	| type TK_IDENTIFIER '=' expression
 	;
 
-
-
-array : ':' array
-	| expr array
-	|
+type
+	: KW_CHAR
+	| KW_FLOAT
+	| KW_INT
 	;
 
-param : KW_INT TK_IDENTIFIER param
-	| KW_FLOAT TK_IDENTIFIER param
-	| KW_CHAR TK_IDENTIFIER param
-
-	| KW_INT TK_IDENTIFIER 'q' LIT_INTEGER 'p' param
-	| KW_FLOAT TK_IDENTIFIER 'q' LIT_INTEGER 'p' param
-	| KW_CHAR TK_IDENTIFIER 'q' LIT_INTEGER 'p' param
-
-	| KW_INT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' param
-	| KW_FLOAT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' param
-	| KW_CHAR TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' param
-	
-	| expr param
-
-	| ',' param
-	|
+lit_list
+	: literal lit_list
+	| literal
 	;
 
-expr : LIT_INTEGER
-	| LIT_FLOAT
+parameters
+	: expression ',' parameters
+	| expression
+	;
+
+print
+	: LIT_STRING ',' print
+	| expression ',' print
 	| LIT_STRING
-	| LIT_CHAR
-	| TK_IDENTIFIER
-	| TK_IDENTIFIER expr
-	| expr '+' expr
-	| expr '-' expr
-	| expr '*' expr
-	| expr '/' expr
-	| expr '<' expr
-	| expr '>' expr
-	| expr OPERATOR_EQ expr
-	| expr OPERATOR_OR expr
-	| expr OPERATOR_AND expr
-	| expr OPERATOR_GE expr
-	| expr OPERATOR_LE expr
-	| OPERATOR_NOT expr
-	| 'd' expr 'b'
-	| 'd' param 'b'
+	| expression
 	;
+
+function
+	: type TK_IDENTIFIER 'd' arguments 'b' command
+	;
+
+arguments
+	: type TK_IDENTIFIER ',' arguments
+	| type TK_IDENTIFIER
+	|
+	;
+
+literal
+	: LIT_INTEGER
+	| LIT_FLOAT
+	| LIT_CHAR
+	;
+
+cmd_list
+	: command ';' cmd_list 
+	|
+	;
+
+command
+	: TK_IDENTIFIER '=' expression
+	| TK_IDENTIFIER 'q' expression 'p' '=' expression
+
+	| KW_READ TK_IDENTIFIER
+
+	| KW_PRINT print 
 	
+	| KW_RETURN expression
 
+	| KW_IF expression KW_THEN command 
+	| KW_IF expression KW_THEN command KW_ELSE command
 
+	| KW_WHILE expression command
+
+	| '{' cmd_list '}'
+
+	|
+
+	;
+
+expression 
+	: literal
+	| expression OPERATOR_LE expression 
+ 	| expression OPERATOR_GE expression
+ 	| expression OPERATOR_EQ expression
+ 	| expression OPERATOR_OR expression  
+	| expression OPERATOR_AND expression 
+	| OPERATOR_NOT expression 
+	| expression '<' expression
+	| expression '>' expression
+	| expression '+' expression
+	| expression '-' expression
+	| expression '*' expression
+	| expression '/' expression
+	| TK_IDENTIFIER 
+	| TK_IDENTIFIER 'q' expression 'p'
+	| TK_IDENTIFIER 'd' 'b'
+	| TK_IDENTIFIER 'd' parameters 'b'
+	| 'd' expression 'b'
+	;
 %%
 
 int yyerror(char *msg){

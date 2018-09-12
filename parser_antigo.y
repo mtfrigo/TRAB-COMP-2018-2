@@ -48,49 +48,50 @@ program : cmdlist
 cmdlist : cmd cmdlist 
 	|
 	;
-
+type : KW_INT TK_IDENTIFIER
+	| KW_FLOAT TK_IDENTIFIER
+	| KW_CHAR TK_IDENTIFIER
+	;
 
 cmd	: 
-	  KW_INT TK_IDENTIFIER  '=' expr ';'
-	| KW_INT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
-	| KW_INT TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
 
-	| KW_FLOAT TK_IDENTIFIER '=' expr ';'
-	| KW_FLOAT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
-	| KW_FLOAT TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
-
-	| KW_CHAR TK_IDENTIFIER '=' expr ';'
-	| KW_CHAR TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' array ';'
-	| KW_CHAR TK_IDENTIFIER 'q' LIT_INTEGER 'p' array ';'
+	type '=' expr ';'
+	| type 'q' LIT_INTEGER 'p' array ';'
 
 	| TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' '=' expr ';'
+	| TK_IDENTIFIER 'q' LIT_INTEGER 'p' '=' expr ';'
 	| TK_IDENTIFIER '=' expr ';'
 
-	| KW_INT TK_IDENTIFIER 'd' param 'b' '{' cmdlist '}'
+	| type 'd' param 'b' '{' cmdlist '}'
 
 	| KW_PRINT TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
 	| KW_PRINT TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
 	| KW_PRINT param ';'
 
 	| KW_READ TK_IDENTIFIER ';'
+	
 	| KW_RETURN expr ';'
+	| KW_RETURN TK_IDENTIFIER 'q' TK_IDENTIFIER 'p' ';'
+	| KW_RETURN TK_IDENTIFIER 'q' LIT_INTEGER 'p' ';'
 
 	| KW_WHILE 'd' expr 'b' '{' cmdlist '}' ';'
-	| KW_WHILE expr '{' cmdlist '}' ';'
+	| KW_WHILE expr cmd
 	
 	| TK_IDENTIFIER '=' TK_IDENTIFIER 'd' param 'b' ';'
 
 	| KW_IF expr KW_THEN cmd 
-	| KW_IF expr KW_THEN '{' cmdlist '}'  
+	| KW_IF expr KW_THEN '{' cmdlist '}'
 
 	| KW_IF 'd' expr 'b' KW_THEN cmd 
 	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' 
 
+	| KW_IF expr KW_THEN KW_ELSE 
 	| KW_IF expr KW_THEN cmd KW_ELSE 
 	| KW_IF expr KW_THEN cmd KW_ELSE '{' cmdlist '}' 
 	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE
-	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}'
+	| KW_IF expr KW_THEN '{' cmdlist '}' KW_ELSE '{' cmdlist '}' 
 
+	| KW_IF 'd' expr 'b' KW_THEN KW_ELSE 
 	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE 
 	| KW_IF 'd' expr 'b' KW_THEN cmd KW_ELSE '{' cmdlist '}' 
 	| KW_IF 'd' expr 'b' KW_THEN '{' cmdlist '}' KW_ELSE
@@ -99,7 +100,6 @@ cmd	:
 	| ';'
 
 	| '{' cmdlist '}' ';'
-
 	
 	;
 
@@ -133,6 +133,7 @@ expr : LIT_INTEGER
 	| LIT_STRING
 	| LIT_CHAR
 	| TK_IDENTIFIER
+	| TK_IDENTIFIER expr
 	| expr '+' expr
 	| expr '-' expr
 	| expr '*' expr
@@ -146,6 +147,7 @@ expr : LIT_INTEGER
 	| expr OPERATOR_LE expr
 	| OPERATOR_NOT expr
 	| 'd' expr 'b'
+	| 'd' param 'b'
 	;
 	
 

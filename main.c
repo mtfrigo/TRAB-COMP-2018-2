@@ -32,6 +32,7 @@ int main (int argc, char **argv)
 	
 	int result = yyparse();
 
+
 	if(result == 0){
         fprintf(stderr, "Codigo aceito pela gramatica Gerofrigolicius!!!:\n");
         exit(0);
@@ -40,6 +41,7 @@ int main (int argc, char **argv)
         fprintf(stderr, "Error parsing the source code on line %d\n", getLineNumber());
         exit(3);
     }	
+
 
 }
 
