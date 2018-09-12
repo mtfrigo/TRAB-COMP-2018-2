@@ -104,14 +104,9 @@ union YYSTYPE
 {
 #line 9 "parser.y" /* yacc.c:1909  */
 
-	int intValue;
-	float floatValue;
-	char *stringValue;
-	char *identValue;
-	char charValue;
 	struct hash_node* symbol;
 
-#line 115 "y.tab.h" /* yacc.c:1909  */
+#line 110 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -164,14 +164,9 @@ union YYSTYPE
 {
 #line 9 "parser.y" /* yacc.c:355  */
 
-	int intValue;
-	float floatValue;
-	char *stringValue;
-	char *identValue;
-	char charValue;
 	struct hash_node* symbol;
 
-#line 175 "y.tab.c" /* yacc.c:355  */
+#line 170 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -188,7 +183,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 192 "y.tab.c" /* yacc.c:358  */
+#line 187 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -488,12 +483,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    54,    54,    55,    59,    60,    64,    65,    66,    70,
-      71,    72,    76,    77,    81,    82,    86,    87,    88,    89,
-      93,    97,    98,    99,   103,   104,   105,   109,   110,   114,
-     115,   117,   119,   121,   123,   124,   126,   128,   130,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152
+       0,    49,    49,    50,    54,    55,    59,    60,    61,    65,
+      66,    67,    71,    72,    76,    77,    81,    82,    83,    84,
+      88,    92,    93,    94,    98,    99,   100,   104,   105,   109,
+     110,   112,   114,   116,   118,   119,   121,   123,   125,   130,
+     131,   132,   133,   134,   135,   136,   137,   138,   139,   140,
+     141,   142,   143,   144,   145,   146,   147
 };
 #endif
 
@@ -1363,7 +1358,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1367 "y.tab.c" /* yacc.c:1646  */
+#line 1362 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1591,7 +1586,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 154 "parser.y" /* yacc.c:1906  */
+#line 149 "parser.y" /* yacc.c:1906  */
 
 
 int yyerror(char *msg){
