@@ -1,0 +1,10 @@
+read vq2p;
+read vqvariavelp;
+
+int vqoioiop;
+int vqoioiop : 0 0 0 0;
+
+int main d int 2, int n b{;}
+int main d int 0.5, int n b{;}
+int main d int 'c', int n b{;}
+int main d int "hehe", int n b{;}

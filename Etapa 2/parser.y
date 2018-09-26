@@ -1,8 +1,6 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
-	#include "ast.h"
-	#include "hash.h"
 	int getLineNumber(void);
 	int yylex();
 	int yyerror();
@@ -10,7 +8,6 @@
 
 %union {
 	struct hash_node* symbol;
-	struct ast_node* ast;
 }
 
 %token KW_CHAR
