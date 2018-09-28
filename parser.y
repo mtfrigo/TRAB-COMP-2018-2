@@ -13,6 +13,28 @@
 	struct ast_node* ast;
 }
 
+%type<ast> dec
+%type<ast> ldec
+%type<ast> program
+%type<ast> exp
+%type<ast> cmd
+%type<ast> lcmd
+%type<ast> read
+%type<ast> block
+%type<ast> reset
+%type<ast> l_func_args
+%type<ast> lpe
+%type<ast> print
+%type<ast> reset_func_par
+%type<ast> l_func_par
+%type<ast> func_header
+%type<ast> func_dec
+%type<ast> func_args
+%type<ast> pe
+%type<ast> func_par
+%type<ast> lit
+%type<ast> vet_dec
+
 %token KW_CHAR
 %token KW_INT
 %token KW_FLOAT

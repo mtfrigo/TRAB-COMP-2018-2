@@ -2,6 +2,7 @@
 
 #include "y.tab.h"
 #include "hash.h"
+#include "ast.h"
 
 char *s;
 char buffer[STRING_SIZE];
