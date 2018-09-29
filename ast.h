@@ -11,29 +11,54 @@
 
 //Número máximo de folhas
 #define MAX_SONS 4
+
 #define AST_SYMBOL 1
 #define AST_ADD 2
 #define AST_SUB 3
-#define AST_DEC 4
-#define AST_ASS 5
+#define AST_DIV 4
+#define AST_MUL 5
 #define AST_LCMD 6
-#define AST_VARIABLE 7
-#define AST_LT 8			//less then
-#define AST_FUNC_PAR_FLOAT 9
+
+#define AST_OR 7
+#define AST_AND 8
+#define AST_LT 9			//less then	
 #define AST_GT 10			//greater then
 #define AST_LE 11			//less or equal
 #define AST_GE 12			//great or equal
 #define AST_EQ 13			//equal
 #define AST_NE 14			//not equal
-#define AST_AND 15
-#define AST_OR 16
-#define AST_PARENTHESES 17 		//paranteses
-#define AST_FUNCTIONCALL 18		//chamada de função
-#define AST_NOT 19			// ponto exclm
+#define AST_NOT 15
+
+#define AST_VAR_DECLARATION 16
+#define AST_VEC_DECLARATION 17
+#define AST_LIT_LIST 18
+#define AST_FUNC_DEC 19
+
+#define AST_CHAR_TYPE 20
+#define AST_INT_TYPE 21
+#define AST_FLOAT_TYPE 22
+
+#define AST_ARG_LIST 23
+#define AST_COMMAND 24
+#define AST_COMMAND_LST 25
+
+#define AST_IF_THEN 26
+#define AST_IF_THEN_ELSE 27
+#define AST_WHILE 28
+#define AST_PRINT 29
+#define AST_RETURN 30
+#define AST_READ 31
+#define AST_ATTRIB 32
+#define AST_ATTRIB_VEC 33
+#define AST_PARAM_LST 34 
+
+#define AST_VEC 35
+#define AST_FUNCALL 36
+#define AST_DB 37	
+
 #define AST_TRUE 20
 #define AST_BOOL 21
 #define AST_BLOCK 22
-#define AST_IF_THEN 23 			//if then
 #define AST_IF_THEN_ELSE 24 		// if else
 #define AST_FOR_TO 25
 #define AST_VARIABLE_VEC_1_INT 26
@@ -52,7 +77,6 @@
 #define AST_TO_PTR_VEC_ATRIBUTION 39
 #define AST_TO_END_VEC_ATRIBUTION 40
 #define AST_PTR_VEC_ATRIBUTION 41
-#define AST_RETURN 42
 #define AST_INT 43
 #define AST_FLOAT 44
 #define AST_CHAR 45
@@ -69,8 +93,6 @@
 #define AST_PRINT_LIST 56
 #define END_SYMBOL 57
 #define PTR_SYMBOL 58
-#define AST_PRINT 59
-#define AST_READ 60
 #define AST_FUNC_HEADER_CHAR 61
 #define AST_FUNC_HEADER_INT 62
 #define AST_FUNC_HEADER_FLOAT 63
@@ -88,7 +110,7 @@
 #define AST_VARIABLE_DEC_CHAR 75
 #define AST_LCMD2 76
 #define AST_VET_LIST 77
-#define AST_WHILE 78
+
 
 typedef struct ast_node{
     int type;

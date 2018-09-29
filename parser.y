@@ -72,7 +72,7 @@
 
 program 
 	: declaration
-	| program declaration
+	| program declaration 					{ $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); }
 	;
 
 declaration
@@ -81,95 +81,96 @@ declaration
 	;
 
 var_global
-	: type TK_IDENTIFIER 'q' literal 'p'
-	| type TK_IDENTIFIER 'q' literal 'p' ':' lit_list
-	| type TK_IDENTIFIER '=' expression
+	: type TK_IDENTIFIER 'q' literal 'p' 			{ $$ = astCreate(AST_VEC_DECLARATION, 0, $1, $3, 0, 0); }
+	| type TK_IDENTIFIER 'q' literal 'p' ':' lit_list 	{ $$ = astCreate(AST_VEC_DECLARATION, 0, $1, $3, $6, 0); }
+	| type TK_IDENTIFIER '=' expression 			{ $$ = astCreate(AST_VAR_DECLARATION, 0, $1, $3, 0, 0); }
 	;
 
 type
-	: KW_CHAR
-	| KW_FLOAT
-	| KW_INT
+	: KW_CHAR						{ $$ = astCreate(AST_CHAR_TYPE, $2, 0, 0, 0, 0); }
+	| KW_FLOAT						{ $$ = astCreate(AST_FLOAT_TYPE, $2, 0, 0, 0, 0); }
+	| KW_INT						{ $$ = astCreate(AST_INT_TYPE, $2, 0, 0, 0, 0); }
 	;
 
 lit_list
-	: literal lit_list
-	| literal
+	: literal lit_list					{ $$ = astCreate(AST_LIT_LIST, 0, $2, $1, 0, 0); }
+	| literal						{ $$ = astCreate(AST_LIT_LIST, 0, 0, $1, 0, 0); }
 	;
 
 parameters
-	: expression ',' parameters
-	| expression
+	: expression ',' parameters				{ $$ = astCreate(AST_PARAM_LST, 0, $3, $1, 0, 0); }
+	| expression						{ $$ = astCreate(AST_PARAM_LST, 0, $1, 0, 0, 0); }
+	| { $$ = 0; }
 	;
 
 print
-	: LIT_STRING ',' print
-	| expression ',' print
-	| LIT_STRING
-	| expression
+	: LIT_STRING ',' print					{ $$ = astCreate(AST_PARAM_LIST, 0, $1, 0, 0, 0); }
+	| expression ',' print					{ $$ = astCreate(AST_PARAM_LIST, 0, $3, $1, 0, 0); }
+	| LIT_STRING						{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }	
+	| expression						
 	;
 
 function
-	: type TK_IDENTIFIER 'd' arguments 'b' command
+	: type TK_IDENTIFIER 'd' arguments 'b' command			{ $$ = astCreate(AST_FUNC_DEC, 0, $1, $3, $5, 0); }
 	;
 
 arguments
-	: type TK_IDENTIFIER ',' arguments
-	| type TK_IDENTIFIER
-	|
+	: type TK_IDENTIFIER ',' arguments				{ $$ = astCreate(AST_ARG_LIST, 0, $3, $1, 0, 0); }
+	| type TK_IDENTIFIER						{ $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0); }
+	| { $$ = 0; }
 	;
 
 literal
-	: LIT_INTEGER
-	| LIT_FLOAT
-	| LIT_CHAR
+	: LIT_INTEGER 							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
+	| LIT_FLOAT							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
+	| LIT_CHAR							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
 	;
 
 cmd_list
-	: command ';' cmd_list 
-	|
+	: command ';' cmd_list						{ $$ = astCreate(AST_COMMAND_LST, 0, $1, $3, 0, 0); }	
+	| { $$ = 0; }
 	;
 
 command
-	: TK_IDENTIFIER '=' expression
-	| TK_IDENTIFIER 'q' expression 'p' '=' expression
+	: TK_IDENTIFIER '=' expression					{ $$ = astCreate(AST_ATTRIB, 0, $1, $3, 0, 0); }
+	| TK_IDENTIFIER 'q' expression 'p' '=' expression		{ $$ = astCreate(AST_ATTRIB_VEC, 0, $1, $3, $6, 0); }
 
-	| KW_READ TK_IDENTIFIER
+	| KW_READ TK_IDENTIFIER						{ $$ = astCreate(AST_READ, 0, $2, 0, 0, 0); }
 
-	| KW_PRINT print 
+	| KW_PRINT print						{ $$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0); } 
 	
-	| KW_RETURN expression
+	| KW_RETURN expression						{ $$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0); }
 
-	| KW_IF expression KW_THEN command 
-	| KW_IF expression KW_THEN command KW_ELSE command
+	| KW_IF expression KW_THEN command				{ $$ = astCreate(AST_IF_THEN, 0, $2, $4, 0, 0); } 
+	| KW_IF expression KW_THEN command KW_ELSE command		{ $$ = astCreate(AST_IF_THEN_ELSE, 0, $2, $4, $6, 0); }
 
-	| KW_WHILE expression command
+	| KW_WHILE expression command					{ $$ = astCreate(AST_WHILE, 0, $2, $3, 0, 0); }
 
-	| '{' cmd_list '}'
+	| '{' cmd_list '}'						{ $$ = astCreate(AST_COMMAND, 0, $2, 0, 0, 0); }
 
-	|
+	| { $$ = 0; }
 
 	;
 
 expression 
 	: literal
-	| expression OPERATOR_LE expression 
- 	| expression OPERATOR_GE expression
- 	| expression OPERATOR_EQ expression
- 	| expression OPERATOR_OR expression  
-	| expression OPERATOR_AND expression 
-	| OPERATOR_NOT expression 
-	| expression '<' expression
-	| expression '>' expression
-	| expression '+' expression
-	| expression '-' expression
-	| expression '*' expression
-	| expression '/' expression
+	| expression OPERATOR_LE expression				{ $$ = astCreate(AST_LE, 0, $1, $3, 0, 0); } 
+ 	| expression OPERATOR_GE expression				{ $$ = astCreate(AST_GE, 0, $1, $3, 0, 0); }
+ 	| expression OPERATOR_EQ expression				{ $$ = astCreate(AST_EQ, 0, $1, $3, 0, 0); }
+ 	| expression OPERATOR_OR expression  				{ $$ = astCreate(AST_OR, 0, $1, $3, 0, 0); }
+	| expression OPERATOR_AND expression 				{ $$ = astCreate(AST_AND, 0, $1, $3, 0, 0); }
+	| OPERATOR_NOT expression 					{ $$ = astCreate(AST_NOT, 0, $2, 0, 0, 0); }
+	| expression '<' expression					{ $$ = astCreate(AST_LT, 0, $1, $3, 0, 0); }
+	| expression '>' expression					{ $$ = astCreate(AST_GT, 0, $1, $3, 0, 0); }
+	| expression '+' expression					{ $$ = astCreate(AST_ADD, 0, $1, $3, 0, 0); }
+	| expression '-' expression					{ $$ = astCreate(AST_SUB, 0, $1, $3, 0, 0); }
+	| expression '*' expression					{ $$ = astCreate(AST_MUL, 0, $1, $3, 0, 0); }
+	| expression '/' expression					{ $$ = astCreate(AST_DIV, 0, $1, $3, 0, 0); }
 	| TK_IDENTIFIER 
-	| TK_IDENTIFIER 'q' expression 'p'
+	| TK_IDENTIFIER 'q' expression 'p'				{ $$ = astCreate(AST_VEC, 0, $1, $3, 0, 0); }
 	| TK_IDENTIFIER 'd' 'b'
-	| TK_IDENTIFIER 'd' parameters 'b'
-	| 'd' expression 'b'
+	| TK_IDENTIFIER 'd' parameters 'b'				{ $$ = astCreate(AST_FUNCALL, 0, $1, $3, 0, 0); }
+	| 'd' expression 'b'						{ $$ = astCreate(AST_DB, 0, $2, 0, 0, 0); }
 	;
 %%
 
