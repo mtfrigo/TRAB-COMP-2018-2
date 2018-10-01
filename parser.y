@@ -6,6 +6,8 @@
 	int getLineNumber(void);
 	int yylex();
 	int yyerror();
+	AST_NODE* getAST();
+	AST_NODE* root = NULL;
 %}
 
 %union {
@@ -13,27 +15,19 @@
 	struct ast_node* ast;
 }
 
-%type<ast> dec
-%type<ast> ldec
 %type<ast> program
-%type<ast> exp
-%type<ast> cmd
-%type<ast> lcmd
-%type<ast> read
-%type<ast> block
-%type<ast> reset
-%type<ast> l_func_args
-%type<ast> lpe
+%type<ast> declaration
+%type<ast> var_global
+%type<ast> type
+%type<ast> lit_list
+%type<ast> parameters
 %type<ast> print
-%type<ast> reset_func_par
-%type<ast> l_func_par
-%type<ast> func_header
-%type<ast> func_dec
-%type<ast> func_args
-%type<ast> pe
-%type<ast> func_par
-%type<ast> lit
-%type<ast> vet_dec
+%type<ast> function
+%type<ast> arguments
+%type<ast> literal
+%type<ast> cmd_list
+%type<ast> command
+%type<ast> expression
 
 %token KW_CHAR
 %token KW_INT
@@ -72,7 +66,7 @@
 
 program 
 	: declaration
-	| program declaration 					{ $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); }
+	| program declaration 					{ root = $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); }
 	;
 
 declaration
@@ -179,4 +173,9 @@ int yyerror(char *msg){
 	fprintf(stderr, "Gerofrigolicius Syntax Error at line %d\n", getLineNumber());
 	exit(3);
 
+}
+
+AST_NODE* getAST(){
+
+	return root;
 }
