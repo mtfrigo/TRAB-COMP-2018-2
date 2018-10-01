@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "ast.h"
 
+int yyparse(void);
 int yylex(void);
 void hashPrint(void);
 void printToken(int);
