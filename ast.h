@@ -2,8 +2,6 @@
 #define AST_HEADER
 
 #include "hash.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 #define FILHOZERO 0
 #define FILHOUM 1

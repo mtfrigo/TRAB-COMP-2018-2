@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 #define HASH_SIZE 997
 #define STRING_SIZE 100 

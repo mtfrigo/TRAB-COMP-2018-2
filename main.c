@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "y.tab.h"
 #include "ast.h"
 
 int yylex(void);
