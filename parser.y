@@ -75,15 +75,15 @@ declaration
 	;
 
 var_global
-	: type TK_IDENTIFIER 'q' literal 'p' 			{ $$ = astCreate(AST_VEC_DECLARATION, 0, $1, $3, 0, 0); }
-	| type TK_IDENTIFIER 'q' literal 'p' ':' lit_list 	{ $$ = astCreate(AST_VEC_DECLARATION, 0, $1, $3, $6, 0); }
-	| type TK_IDENTIFIER '=' expression 			{ $$ = astCreate(AST_VAR_DECLARATION, 0, $1, $3, 0, 0); }
+	: type TK_IDENTIFIER 'q' literal 'p' 			{ $$ = astCreate(AST_VEC_DECLARATION, 0, $2, $4, 0, 0); }
+	| type TK_IDENTIFIER 'q' literal 'p' ':' lit_list 	{ $$ = astCreate(AST_VEC_DECLARATION, 0, $2, $4, $7, 0); }
+	| type TK_IDENTIFIER '=' expression 			{ $$ = astCreate(AST_VAR_DECLARATION, 0, $2, $4, 0, 0); }
 	;
 
 type
-	: KW_CHAR						{ $$ = astCreate(AST_CHAR_TYPE, $2, 0, 0, 0, 0); }
-	| KW_FLOAT						{ $$ = astCreate(AST_FLOAT_TYPE, $2, 0, 0, 0, 0); }
-	| KW_INT						{ $$ = astCreate(AST_INT_TYPE, $2, 0, 0, 0, 0); }
+	: KW_CHAR						
+	| KW_FLOAT						
+	| KW_INT						
 	;
 
 lit_list
