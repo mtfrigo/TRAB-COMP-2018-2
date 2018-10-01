@@ -56,5 +56,6 @@ typedef struct ast_node{
 
 AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST *son3);
 void astToFile(int level, AST* node, FILE *fileTree);
+void astPrint(int level, AST* node);
 
 #endif

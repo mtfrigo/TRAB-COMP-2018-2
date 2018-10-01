@@ -10,6 +10,7 @@ int isRunning(void);
 void initMe(void);
 int getLineNumber(void);
 void astToFile(int level, AST* node, FILE *fileTree);
+void astPrint(int level, AST* node);
 AST* getAST(void);
 
 extern char *yytext;
@@ -49,14 +50,14 @@ int main(int argc, char** argv)
 
 	if( result == 0 )
 	{
-		fprintf(stderr, "The hash table for the symbols of the input file is: \n");
+		fprintf(stderr, "Hash table of the input file: \n");
 		hashPrint();
-		fprintf(stderr, "\nThe syntactical tree for the input file is: \n");
-		astToFile(0, getAST(), outputFile);
-		//astGenerateSource(getAST(), outputFile);
+		fprintf(stderr, "\nSyntactical tree for the input file: \n");
+		astPrint(0, getAST());
+		//astToFile(0, getAST(), outputFile);
 
-		fprintf(stderr, "\nAccepted source code!\n");
-		fprintf(stderr, "\nThe generated source code is in the '%s' file.\n", argv[2]);
+		fprintf(stderr, "\nSource code OK!\n");
+		//fprintf(stderr, "\nSource code generated in '%s' file.\n", argv[2]);
 
 		exit(0);
 	}

@@ -1,0 +1,11 @@
+int a = 0;
+int i = 0;
+int v q10p: 0 0 0 0 2 0 0 0 0 40;
+int mat q10p;
+float f = 10.55;
+char c = 'x';
+char x = 65;
+
+int main db {
+  a = 7;
+}
