@@ -4,8 +4,8 @@
 	int getLineNumber(void);
 	int yylex();
 	int yyerror();
-	AST_NODE* getAST();
-	AST_NODE* root = NULL;
+	AST* getAST();
+	AST* root = NULL;
 %}
 
 %union {
@@ -96,8 +96,8 @@ parameters
 	;
 
 print
-	: LIT_STRING ',' print					{ $$ = astCreate(AST_PARAM_LIST, $1, 0, 0, 0, 0); $$ = astCreate(AST_PARAM_LIST, 0, $3, 0, 0, 0); }
-	| expression ',' print					{ $$ = astCreate(AST_PARAM_LIST, 0, $3, $1, 0, 0); }
+	: LIT_STRING ',' print					{ $$ = astCreate(AST_PARAM_LST, $1, 0, 0, 0, 0); $$ = astCreate(AST_PARAM_LST, 0, $3, 0, 0, 0); }
+	| expression ',' print					{ $$ = astCreate(AST_PARAM_LST, 0, $3, $1, 0, 0); }
 	| LIT_STRING						{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }	
 	| expression						
 	;
@@ -173,7 +173,7 @@ int yyerror(char *msg){
 
 }
 
-AST_NODE* getAST(){
+AST* getAST(){
 
 	return root;
 }

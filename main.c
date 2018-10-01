@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "The hash table for the symbols of the input file is: \n");
 		hashPrint();
 		fprintf(stderr, "\nThe syntactical tree for the input file is: \n");
-		astPrint(getAST(), 0);
+		astToFile(0, getAST(), outputFile);
 		//astGenerateSource(getAST(), outputFile);
 
 		fprintf(stderr, "\nAccepted source code!\n");

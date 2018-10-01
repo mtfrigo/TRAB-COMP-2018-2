@@ -1,3 +1,6 @@
+#ifndef HASH_HEADER
+#define HASH_HEADER
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -18,3 +21,5 @@ int hashAddress(char *text);
 HASH_NODE* hashInsert(int type, char *text);
 HASH_NODE* hashFind(char *text);
 void hashPrint(void);
+
+#endif
