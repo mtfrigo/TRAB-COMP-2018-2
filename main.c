@@ -9,7 +9,7 @@ void printToken(int);
 int isRunning(void);
 void initMe(void);
 int getLineNumber(void);
-void astToFile(int level, AST* node, FILE *fileTree);
+void astToFile(AST* node, FILE *fileTree);
 void astPrint(int level, AST* node);
 AST* getAST(void);
 
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 		hashPrint();
 		fprintf(stderr, "\nSyntactical tree for the input file: \n");
 		astPrint(0, getAST());
-		//astToFile(0, getAST(), outputFile);
+		astToFile(getAST(), outputFile);
 
 		fprintf(stderr, "\nSource code OK!\n");
 		//fprintf(stderr, "\nSource code generated in '%s' file.\n", argv[2]);

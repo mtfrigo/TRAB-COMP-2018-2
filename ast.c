@@ -78,7 +78,7 @@ void astPrint(int level, AST *node){
 			
 }
 
-void astToFile(int level, AST *node, FILE *f){
+void astToFile(AST *node, FILE *f){
 	
 	int i = 0;
 
@@ -94,6 +94,8 @@ void astToFile(int level, AST *node, FILE *f){
 		}
 		case AST_DEC: {
 			
+			for(i = 0; i < MAX_SONS; i++)
+				astToFile(node->son[i], f);
 
 			break;
 		}
@@ -104,6 +106,11 @@ void astToFile(int level, AST *node, FILE *f){
 		}
 		case AST_VAR_DECLARATION: {
 			
+			astToFile(node->son[0], f);
+			fprintf(f, " = ");
+
+			astToFile(node->son[1], f);
+			fprintf(f, ";\n");
 
 			break;
 		}
