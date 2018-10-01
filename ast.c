@@ -81,15 +81,16 @@ void astPrint(int level, AST *node){
 void astToFile(AST *node, FILE *f){
 	
 	int i = 0;
+	int level = 0;
 
 	if(node == 0)
 		return;
 	  
 	switch(node->type){
 
-		case AST_SYMBOL:{
-			
-
+		case AST_SYMBOL: {
+		
+			fprintf(f, "%s", node->symbol->text);
 			break;
 		}
 		case AST_DEC: {
@@ -101,7 +102,16 @@ void astToFile(AST *node, FILE *f){
 		}
 		case AST_VEC_DECLARATION: {
 			
+			astToFile(node->son[0], f);
 
+		    	fprintf(f, " q%sp", node->son[1]->symbol->text);
+
+		    	if(node->son[2] != 0)
+		    	{
+		        	fprintf(f, ": ");
+		        	astToFile(node->son[2], f);
+		    	}
+		    	fprintf(f, ";\n");
 			break;
 		}
 		case AST_VAR_DECLARATION: {
@@ -115,167 +125,311 @@ void astToFile(AST *node, FILE *f){
 			break;
 		}
 		case AST_CHAR_TYPE: {
-			
 
+			fprintf(f, "char %s", node->symbol->text);
+			
 			break;
 		}
 		case AST_FLOAT_TYPE: {
 			
+			fprintf(f, "float %s", node->symbol->text);
 
 			break;
 		}
 		case AST_INT_TYPE: {
 			
+			fprintf(f, "int %s", node->symbol->text);
 
 			break;
 		}
 		case AST_LIT_LIST: {
-			
+		
+			if(node->son[1] != 0)
+            		{
+                		astToFile(node->son[1], f);
+                		fprintf(f, " ");
+           		 }
+            		astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_PARAM_LST: {
-			
+
+			if(node->son[1] != 0)
+		    	{
+				if(node->son[1]->type == AST_PARAM_LST)
+				{
+			    		astToFile(node->son[1], f);
+			 	   	fprintf(f, ", ");
+				}
+		    	}
+            		astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_FUNC_DEC: {
-			
+
+			astToFile(node->son[0], f);
+            		fprintf(f, " d ");
+            		astToFile(node->son[1], f);
+            		fprintf(f, " b\n");
+            		astToFile(node->son[2], f);
+            		fprintf(f, "\n");
 
 			break;
 		}
 		case AST_ARG_LIST: {
 			
+			if(node->son[1] != 0)
+		    	{
+				if(node->son[1]->type == AST_PARAM_LST)
+				{
+			    		astToFile(node->son[1], f);
+			 	   	fprintf(f, ", ");
+				}
+		    	}
+            		astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_COMMAND_LST: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, ";\n");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_ATTRIB: {
-			
+
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		astToFile(node->son[0], f);
+            		fprintf(f, " = ");
+            		astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_ATTRIB_VEC: {
-			
+
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		astToFile(node->son[0], f);
+            		fprintf(f, " q");
+            		astToFile(node->son[1], f);
+            		fprintf(f, "p = ");
+			astToFile(node->son[2], f);
 
 			break;
 		}
 		case AST_PRINT: {
 			
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		fprintf(f, "print ");
+            		astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_RETURN: {
 			
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		fprintf(f, "return ");
+            		astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_READ: {
-			
+
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		fprintf(f, "read ");
+            		astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_IF_THEN: {
-			
 
+			for (i = 0; i < level; i++) fprintf
+				(f, "    ");
+		    	fprintf(f, "if ");
+		    	astToFile(node->son[0], f);
+		    	fprintf(f, " then\n");
+		    	for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+		    	astToFile(node->son[1], f);
+			
 			break;
 		}
 		case AST_IF_THEN_ELSE: {
-			
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		fprintf(f, "if ");
+            		astToFile(node->son[0], f);
+            		fprintf(f, " then\n");
+            		for (i = 0; i < level; i++)
+				fprintf(f, "    ");
+            		astToFile(node->son[1], f);
+            		fprintf(f, "\n");
+            		for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		fprintf(f, "else\n");
+            		for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		astToFile(node->son[2], f);
 
 			break;
 		}
 		case AST_WHILE: {
 			
+			for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		fprintf(f, "while ");
+            		astToFile(node->son[0], f);
+            		fprintf(f, "\n");
+            		for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+            		astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_COMMAND: {
 			
+			fprintf(f, "{\n");
+            		level++;
+            		astToFile(node->son[0], f);
+            		level--;
+            		for (i = 0; i < level; i++) 
+				fprintf(f, "    ");
+			fprintf(f, "}");
 
 			break;
 		}
 		case AST_LT: {
-			
+
+			astToFile(node->son[0], f);
+            		fprintf(f, " < ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_GT: {
-			
+				
+			astToFile(node->son[0], f);
+            		fprintf(f, " > ");
+			astToFile(node->son[1], f);			
 
 			break;
 		}
 		case AST_LE: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, " <= ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_GE: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, " >= ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_EQ: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, " == ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_OR: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, " or ");
+			astToFile(node->son[1], f);			
 
 			break;
 		}
 		case AST_AND: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, " and ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_NOT: {
 			
+            		fprintf(f, "not ");
+			astToFile(node->son[0], f);
 
 			break;
 		}
 		case AST_ADD: {
-			
 
+			astToFile(node->son[0], f);
+            		fprintf(f, " + ");
+			astToFile(node->son[1], f);
+			
 			break;
 		}
 		case AST_SUB: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, " - ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_DIV: {
-			
 
+			astToFile(node->son[0], f);
+            		fprintf(f, " / ");
+			astToFile(node->son[1], f);
+			
 			break;
 		}
 		case AST_MUL: {
-			
+
+			astToFile(node->son[0], f);
+            		fprintf(f, " * ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
 		case AST_VEC: {
-			
 
+			astToFile(node->son[0], f);
+            		fprintf(f, " q");
+            		astToFile(node->son[1], f);
+			fprintf(f, "p");
+			
 			break;
 		}
 		case AST_FUNCALL: {
 			
+			astToFile(node->son[0], f);
+            		fprintf(f, "d ");
+            		astToFile(node->son[1], f);
+			fprintf(f, " b");
 
 			break;
 		}
 		case AST_DB: {
-			
 
+			fprintf(f, "d ");
+            		astToFile(node->son[0], f);
+			fprintf(f, " b");
+		
 			break;
 		}
 		default: {
 			
+			fprintf(f, "GEROFRIGOLICIOUS VOS SAUDA");	
 
 			break;
 		}
