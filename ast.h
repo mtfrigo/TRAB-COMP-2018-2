@@ -46,7 +46,8 @@
 #define AST_MUL 		33
 #define AST_VEC 		34
 #define AST_FUNCALL 		35
-#define AST_DB 			36			
+#define AST_DB 			36	
+#define AST_STRING 			37			
 
 typedef struct ast_node{
     int type;

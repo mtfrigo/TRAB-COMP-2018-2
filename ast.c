@@ -64,6 +64,7 @@ void astPrint(int level, AST *node){
 		case AST_VEC: fprintf(stderr, "AST_VEC, ");				break;
 		case AST_FUNCALL: fprintf(stderr, "AST_FUNCALL," );			break;
 		case AST_DB: fprintf(stderr, "AST_DB, ");				break;
+		case AST_STRING: fprintf(stderr, "AST_STRING, ");				break;
 		default: fprintf(stderr,"AST_UNKNOWN, ");				break;
 
 	}
@@ -130,6 +131,14 @@ void astToFile(AST *node, FILE *f){
 			
 			break;
 		}
+		case AST_STRING: {
+
+			fprintf(f, "\"");
+			fprintf(f, "%s", node->symbol->text);
+			fprintf(f, "\"");
+			
+			break;
+		}
 		case AST_FLOAT_TYPE: {
 			
 			fprintf(f, "float %s", node->symbol->text);
@@ -163,6 +172,7 @@ void astToFile(AST *node, FILE *f){
 			 	   	fprintf(f, ", ");
 				}
 		    	}
+
             		astToFile(node->son[0], f);
 
 			break;
@@ -170,11 +180,10 @@ void astToFile(AST *node, FILE *f){
 		case AST_FUNC_DEC: {
 
 			astToFile(node->son[0], f);
-            		fprintf(f, " d ");
+            		fprintf(f, " d");
             		astToFile(node->son[1], f);
-            		fprintf(f, " b\n");
+            		fprintf(f, "b");
             		astToFile(node->son[2], f);
-            		fprintf(f, "\n");
 
 			break;
 		}
@@ -182,7 +191,7 @@ void astToFile(AST *node, FILE *f){
 			
 			if(node->son[1] != 0)
 		    	{
-				if(node->son[1]->type == AST_PARAM_LST)
+				if(node->son[1]->type == AST_ARG_LIST)
 				{
 			    		astToFile(node->son[1], f);
 			 	   	fprintf(f, ", ");
@@ -226,8 +235,12 @@ void astToFile(AST *node, FILE *f){
 			
 			for (i = 0; i < level; i++) 
 				fprintf(f, "    ");
-            		fprintf(f, "print ");
-            		astToFile(node->son[0], f);
+
+
+			fprintf(f, "print ");
+
+			astToFile(node->son[0], f);
+
 
 			break;
 		}
@@ -235,8 +248,8 @@ void astToFile(AST *node, FILE *f){
 			
 			for (i = 0; i < level; i++) 
 				fprintf(f, "    ");
-            		fprintf(f, "return ");
-            		astToFile(node->son[0], f);
+			fprintf(f, "return ");
+			astToFile(node->son[0], f);
 
 			break;
 		}
@@ -415,7 +428,8 @@ void astToFile(AST *node, FILE *f){
 			astToFile(node->son[0], f);
             		fprintf(f, "d ");
             		astToFile(node->son[1], f);
-			fprintf(f, " b");
+			fprintf(f, " b\n");
+
 
 			break;
 		}

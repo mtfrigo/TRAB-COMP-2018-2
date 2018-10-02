@@ -45,8 +45,11 @@
 %type<ast> lit_list
 %type<ast> parameters
 %type<ast> print
+%type<ast> print_argument
+%type<ast> identifier
 %type<ast> function
-%type<ast> arguments
+%type<ast> argument
+%type<ast> argument_list
 %type<ast> literal
 %type<ast> cmd_list
 %type<ast> command
@@ -73,9 +76,9 @@ declaration
 	;
 
 var_global
-	: type 'q' literal 'p' 			{ $$ = astCreate(AST_VEC_DECLARATION, 0, 0, $3, 0, 0); }
-	| type 'q' literal 'p' ':' lit_list 	{ $$ = astCreate(AST_VEC_DECLARATION, 0, 0, $3, $6, 0); }
-	| type '=' expression 			{ $$ = astCreate(AST_VAR_DECLARATION, 0, 0, $3, 0, 0); }
+	: type 'q' literal 'p' 			{ $$ = astCreate(AST_VEC_DECLARATION, 0, $1, $3, 0, 0); }
+	| type 'q' literal 'p' ':' lit_list 	{ $$ = astCreate(AST_VEC_DECLARATION, 0, $1, $3, $6, 0); }
+	| type '=' expression 			{ $$ = astCreate(AST_VAR_DECLARATION, 0, $1, $3, 0, 0); }
 	;
 
 type
@@ -90,26 +93,34 @@ lit_list
 	;
 
 parameters
-	: expression ',' parameters				{ $$ = astCreate(AST_PARAM_LST, 0, $3, $1, 0, 0); }
+	: expression ',' parameters				{ $$ = astCreate(AST_PARAM_LST, 0, $1, $3, 0, 0); }
 	| expression						{ $$ = astCreate(AST_PARAM_LST, 0, $1, 0, 0, 0); }
 	| { $$ = 0; }
 	;
 
 print
-	: LIT_STRING ',' print					{ $$ = astCreate(AST_PARAM_LST, $1, 0, 0, 0, 0); $$ = astCreate(AST_PARAM_LST, 0, $3, 0, 0, 0); }
-	| expression ',' print					{ $$ = astCreate(AST_PARAM_LST, 0, $3, $1, 0, 0); }
-	| LIT_STRING							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }	
+	: print ',' print_argument					{ $$ = astCreate(AST_PARAM_LST, 0, $3, $1, 0, 0);  }
+	| print_argument						{ $$ = astCreate(AST_PARAM_LST, 0, $1, 0, 0, 0); }
+	;
+
+print_argument
+	: LIT_STRING						{ $$ = astCreate(AST_STRING, $1, 0, 0, 0, 0);  }
 	| expression						
 	;
 
 function
-	: type 'd' arguments 'b' command			{ $$ = astCreate(AST_FUNC_DEC, 0, $1, $3, $5, 0); }
+	: type 'd' argument_list 'b' command			{ $$ = astCreate(AST_FUNC_DEC, 0, $1, $3, $5, 0); }
 	;
 
-arguments
-	: type ',' arguments				{  $$ = astCreate(AST_ARG_LIST, 0, $3, $1, 0, 0); }
-	| type 								{  $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0); }
+argument_list
+	: argument_list ',' argument				{  $$ = astCreate(AST_ARG_LIST, 0, $3, $1, 0, 0); }
+	| argument 								{  $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0); }
 	| { $$ = 0; }
+	;
+
+argument
+	: type 'q' literal 'p'				{  $$ = astCreate(AST_VEC, 0, $1, $3, 0, 0); }
+	| type 									
 	;
 
 literal
@@ -123,11 +134,15 @@ cmd_list
 	| { $$ = 0; }
 	;
 
-command
-	: TK_IDENTIFIER '=' expression					{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); $$ = astCreate(AST_ATTRIB, 0, 0, $3, 0, 0); }
-	| TK_IDENTIFIER 'q' expression 'p' '=' expression		{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); $$ = astCreate(AST_ATTRIB_VEC, 0, 0, $3, $6, 0); }
+identifier
+	: TK_IDENTIFIER						{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }	
+	;
 
-	| KW_READ TK_IDENTIFIER						{ $$ = astCreate(AST_READ, $2, 0, 0, 0, 0); }
+command
+	: identifier '=' expression					{ $$ = astCreate(AST_ATTRIB, 0, $1, $3, 0, 0);  }
+	| identifier 'q' expression 'p' '=' expression		{ $$ = astCreate(AST_ATTRIB_VEC, 0, $1, $3, $6, 0); }
+
+	| KW_READ identifier						{ $$ = astCreate(AST_READ, 0, $2, 0, 0, 0); }
 
 	| KW_PRINT print						{ $$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0); } 
 	
@@ -158,10 +173,10 @@ expression
 	| expression '-' expression					{ $$ = astCreate(AST_SUB, 0, $1, $3, 0, 0); }
 	| expression '*' expression					{ $$ = astCreate(AST_MUL, 0, $1, $3, 0, 0); }
 	| expression '/' expression					{ $$ = astCreate(AST_DIV, 0, $1, $3, 0, 0); }
-	| TK_IDENTIFIER								{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); } 
-	| TK_IDENTIFIER 'q' expression 'p'				{ $$ = astCreate(AST_VEC, 0, 0, $3, 0, 0); }
-	| TK_IDENTIFIER 'd' 'b'					{ $$ = 0; }
-	| TK_IDENTIFIER 'd' parameters 'b'				{ $$ = astCreate(AST_FUNCALL, 0, 0, $3, 0, 0); }
+	| identifier						
+	| identifier 'q' expression 'p'				{ $$ = astCreate(AST_VEC, 0, $1, $3, 0, 0); }
+	| identifier 'd' 'b'					{ $$ = 0; }
+	| identifier 'd' parameters 'b'				{ $$ = astCreate(AST_FUNCALL, 0, $1, $3, 0, 0); }
 	| 'd' expression 'b'						{ $$ = astCreate(AST_DB, 0, $2, 0, 0, 0); }
 	;
 %%
