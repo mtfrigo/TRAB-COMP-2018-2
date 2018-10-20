@@ -49,13 +49,8 @@
 #define AST_DB 			36	
 #define AST_STRING 			37			
 
-#define AST_DATATYPE_INT 1
-#define AST_DATATYPE_FLOAT 2
-
-
 typedef struct ast_node{
     int type;
-    int datatype;
     HASH_NODE *symbol;
     struct ast_node *son[MAX_SONS];
 } AST;

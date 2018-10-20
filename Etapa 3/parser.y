@@ -1,7 +1,6 @@
 %{
 	#include "ast.h"
 	#include "hash.h"
-	#include "semantic.h"
 	int getLineNumber(void);
 	int yylex();
 	int yyerror();
@@ -68,11 +67,8 @@
 
 program 
 	: declaration
-	| program declaration 					{ root = $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); 
-	setDeclaration($1);
-	checkUndeclared(); } 
+	| program declaration 					{ root = $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); }
 	;
-	
 
 declaration
 	: var_global ';'

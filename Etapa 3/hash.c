@@ -62,19 +62,3 @@ void hashPrint(void){
         }
     }
 }
-
-void hashCheckUndeclared(void)
-{
-    HASH_NODE *node;
-
-    int i;
-
-    for(i =0; i < HASH_SIZE; i++)
-    {
-        for(node = Table[i]; node; node = node->next)
-            if(node->type == SYMBOL_IDENTIFIER)
-            {
-                fprintf(stderr, "Undeclared symbol %s.\n", node->text);
-            }
-    }
-}

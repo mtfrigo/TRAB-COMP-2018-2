@@ -11,39 +11,33 @@ v qap = 90;
 v q5p = 50;
 print v qap;
 a = d 2 * 5 b / 5;
-print "Digite um numero: 
-";
+print "Digite um numero: pp";
 read a;
 while i < 10
 {
-i = incnd 6, 5, 1, i b
+i = incnd 6 b
 ;
-a = incnd 1, a b
+a = incnd 1 b
 ;
 };
-print "Incrementado algumas vezes fica ", a, "
-";
+print "Incrementado algumas vezes fica ", a, "kk";
 while i < 10
-i = incnd 1, i b
+i = incnd 1 b
 ;
 if a == 5 then
-print "Parou no meio
-";
+print "Parou no meio";
 if d a == 11 or a == 17 b then
-print "Var a ficou 11 ou 17
-";
+print "Var a ficou 11 ou 17a";
 if d a == 11 or a == 17 b then
 {
-print "Var a ficou 11 ou 17
-";
+print "Var a ficou 11 ou 17s";
 }
 else
 {
 print "LLALALAL";
 };
 if d a == 11 or a == 17 b then
-print "Var a ficou 11 ou 17
-"
+print "Var a ficou 11 ou 17asdasd"
 else
 {
 print "LLALALAL";
