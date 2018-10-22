@@ -1,0 +1,8 @@
+int a = 0;
+char x = 65;
+int main db{
+a = 7;
+nico = ;
+i = 2 + 3;
+kkk = 7 + 5;
+}

@@ -69,8 +69,8 @@
 program 
 	: declaration
 	| program declaration 					{ root = $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); 
-	setDeclaration($1);
-	checkUndeclared(); } 
+	
+	 } 
 	;
 	
 

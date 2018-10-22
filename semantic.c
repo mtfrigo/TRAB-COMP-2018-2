@@ -11,19 +11,37 @@ void setDeclaration(AST *root)
 
     for(node = root; node; node = node->son[1])
     {
+
+        if(node->type == AST_DEC)
+        {
+            setDeclaration(node->son[0]);
+            node = node->son[1];
+
+            fprintf(stderr, "Node type: %d.\n", node->type);
+        }
+
         dec = node->son[0];
+        
         if(dec)
         {
-            switch(dec->type)
+
+            fprintf(stderr, "Node type: %d, Dec type %d.\n", node->type, dec->type);
+
+            switch(node->type)
             {
                 case AST_VAR_DECLARATION:
-                    if(dec->symbol)
-                    if(dec->symbol->type != SYMBOL_IDENTIFIER)
-                    {
-                        fprintf(stderr, "Symbol %s redeclared.\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
+                break;
+                    
+                    if(dec->symbol){
+                        if(dec->symbol->type != SYMBOL_IDENTIFIER)
+                        {
+                            fprintf(stderr, "Symbol %s redeclared.\n", dec->symbol->text);
+                            SemanticErrorFlag = 1;
+                        }
                     }
+                    
                     dec->symbol->type = SYMBOL_SCALAR;
+
                     if(dec->son[0]->type == AST_INT_TYPE ||
                         dec->son[0]->type == AST_CHAR_TYPE)
                         {

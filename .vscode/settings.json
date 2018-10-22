@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "stdlib.h": "c",
         "token.h": "c",
-        "y.tab.h": "c"
+        "y.tab.h": "c",
+        "type_traits": "cpp"
     }
 }

@@ -51,6 +51,7 @@
 
 #define AST_DATATYPE_INT 1
 #define AST_DATATYPE_FLOAT 2
+#define AST_DATATYPE_BOOL 3
 
 
 typedef struct ast_node{
@@ -63,5 +64,6 @@ typedef struct ast_node{
 AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST *son3);
 void astToFile(AST* node, FILE *fileTree);
 void astPrint(int level, AST* node);
+void astFind(int level, AST* node, char* text);
 
 #endif

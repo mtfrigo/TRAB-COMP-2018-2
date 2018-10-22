@@ -24,8 +24,6 @@ void astPrint(int level, AST *node){
   	for(i=0; i<level; i++)
    		fprintf(stderr, "   ");
 
-
-
 	switch(node->type){
 
 		case AST_SYMBOL: fprintf(stderr, "AST_SYMBOL, "); 			break;
@@ -213,9 +211,10 @@ void astToFile(AST *node, FILE *f){
 
 			for (i = 0; i < level; i++) 
 				fprintf(f, "    ");
-            		astToFile(node->son[0], f);
-            		fprintf(f, " = ");
-            		astToFile(node->son[1], f);
+
+			astToFile(node->son[0], f);
+			fprintf(f, " = ");
+			astToFile(node->son[1], f);
 
 			break;
 		}
@@ -450,4 +449,29 @@ void astToFile(AST *node, FILE *f){
 
 	}
 	
+}
+
+void astFind(int level, AST *node, char* text)
+{
+	int i = 0;
+
+	if(node == 0)
+		return;
+
+	  
+	if(node->type == AST_VAR_DECLARATION){
+		if((strcmp(node->son[0]->symbol->text, text) == 0 && node->son[0]->symbol->type == 274))
+		{
+			hashSetType(text, SYMBOL_IDENTIFIER);
+		}
+	}
+
+	if(node->type == AST_FUNC_DEC){
+		hashSetType(node->son[0]->symbol->text, SYMBOL_IDENTIFIER);
+	}
+
+
+	for (i=0; i<MAX_SONS; i++){
+		astFind(level+1, node->son[i], text);
+	}
 }

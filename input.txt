@@ -1,7 +1,9 @@
 int a = 0;
-int i = 0;
 char x = 65;
 
 int main db {
   a = 7;
+  nico = fdb;
+  i = 2 + 3 ;
+  kkk = 7 + 5;
 }
