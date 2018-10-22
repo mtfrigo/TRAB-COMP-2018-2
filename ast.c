@@ -466,7 +466,7 @@ void astFind(int level, AST *node, char* text)
 		}
 	}
 
-	if(node->type == AST_FUNC_DEC){
+	if(node->type == AST_FUNC_DEC || node->type == AST_VEC_DECLARATION){
 		hashSetType(node->son[0]->symbol->text, SYMBOL_IDENTIFIER);
 	}
 

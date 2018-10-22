@@ -31,7 +31,7 @@
 #define AST_IF_THEN 		18
 #define AST_IF_THEN_ELSE 	19
 #define AST_WHILE 		20
-#define AST_COMMAND 		21
+#define AST_COMMAND 	21
 #define AST_LT 			22				
 #define AST_GT 			23
 #define AST_LE 			24			

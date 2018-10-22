@@ -1,9 +1,11 @@
-int a = 0;
-char x = 65;
+int i = 5 and 5;
 
-int main db {
+
+
+
+float main db {
   a = 7;
-  nico = fdb;
-  i = 2 + 3 ;
-  kkk = 7 + 5;
+  nico = 5;
+  kkk = 7;
 }
+

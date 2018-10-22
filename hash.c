@@ -4,6 +4,7 @@
 
 #include "hash.h"
 #include "ast.h"
+#include "y.tab.h"
 
 HASH_NODE*Table[HASH_SIZE];
 
@@ -39,6 +40,23 @@ HASH_NODE* hashInsert(int type, char *text){
 
     newnode = (HASH_NODE*) calloc(1, sizeof(HASH_NODE));
     newnode->type = type;
+
+
+    if(type == LIT_INTEGER)
+    {
+        newnode->datatype = DATATYPE_INT;
+    }
+    else if(type == LIT_FLOAT)
+    {
+        newnode->datatype = DATATYPE_FLOAT;
+    }
+    else if(type == LIT_CHAR)
+    {
+        newnode->datatype = DATATYPE_CHAR;
+    }
+
+    //fprintf(stderr, "[HASH] Text: %s; Type: %d\n", text, type);
+
     newnode->text = calloc(strlen(text)+1, sizeof(char));
     strcpy(newnode->text, text);
     newnode->next = Table[address];
@@ -91,9 +109,13 @@ void hashCheckUndeclared(void)
         {
             astFind(0, getAST(), node->text);
             
-            if(node->type == 274)
+            if(node->type == TK_IDENTIFIER)
             {
-                fprintf(stderr, "Variavel %s nao declarada\n", node->text);
+                fprintf(stderr, "[SEMANTIC] Variable %s not declared!\n", node->text);
+            }
+            else if(node->type == LIT_CHAR || node->type == LIT_INTEGER || node->type == LIT_FLOAT )
+            {
+                node->type = SYMBOL_SCALAR;
             }
         }
     }

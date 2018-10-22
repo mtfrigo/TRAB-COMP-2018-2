@@ -9,6 +9,7 @@
 
 void setDeclaration(AST *node);
 void checkUndeclared();
-void checkOperands(AST *node);
+void checkDeclaration(AST* dec, AST* asc);
+void checkOperands(int datatype, AST *node);
 
 #endif
