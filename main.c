@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "\nSource code OK!\n");
 
 		checkUndeclared();
-		//setDeclaration(getAST());
+		setDeclaration(getAST());
 		//fprintf(stderr, "\nSource code generated in '%s' file.\n", argv[2]);
 
 		exit(0);
