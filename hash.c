@@ -115,6 +115,13 @@ void hashCheckUndeclared(void)
             }
             else if(node->type == LIT_CHAR || node->type == LIT_INTEGER || node->type == LIT_FLOAT )
             {
+                switch(node->type)
+                {
+                    case LIT_CHAR: node->datatype = DATATYPE_CHAR; break;
+                    case LIT_INTEGER: node->datatype = DATATYPE_INT; break;
+                    case LIT_FLOAT: node->datatype = DATATYPE_FLOAT; break;
+                }
+
                 node->type = SYMBOL_SCALAR;
             }
         }

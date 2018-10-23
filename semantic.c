@@ -6,6 +6,8 @@
 
 int SemanticErrorFlag = 0;
 
+AST* getAST();
+
 void setDeclaration(AST *root)
 {
     AST *node;
@@ -101,6 +103,8 @@ void setDeclaration(AST *root)
                         }
                     }
 
+                    AST* decAux = dec;
+
                     dec->symbol->type = SYMBOL_FUNCTION;
 
                     if(dec->type == AST_INT_TYPE || dec->type == AST_CHAR_TYPE)
@@ -110,6 +114,48 @@ void setDeclaration(AST *root)
                     else
                     {
                         dec->symbol->datatype = DATATYPE_FLOAT;
+                    }
+
+                    for(asc; asc; asc = asc->son[1])
+                    {
+                        dec = asc->son[0];
+                        
+                        switch(dec->type){
+                            case AST_INT_TYPE:dec->symbol->datatype = DATATYPE_INT; break;
+                            case AST_FLOAT_TYPE:dec->symbol->datatype = DATATYPE_FLOAT; break;
+                            case AST_CHAR_TYPE:dec->symbol->datatype = DATATYPE_CHAR; break;
+                        }
+                    }
+
+                    if(node->son[2])
+                    {
+                        terc = node->son[2];
+
+                        while(terc->type != AST_RETURN)
+                        {
+                            if(terc->son[1])
+                            {
+                                terc = terc->son[1];
+                            }
+                            else
+                            {
+                                terc = terc->son[0];
+                            }
+                        }
+
+                        if(terc->type == AST_RETURN)
+                        {
+                            if(terc->son[0]->type == AST_SYMBOL)
+                            {
+                                if(dec->symbol->datatype != terc->son[0]->symbol->datatype)
+                                {
+                                    if(((decAux->symbol->type == DATATYPE_CHAR || decAux->symbol->type == DATATYPE_INT) && (terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT)) ||
+                                        (decAux->symbol->type == DATATYPE_FLOAT  &&  terc->son[0]->symbol->datatype == DATATYPE_FLOAT))
+                                    fprintf(stderr, "[DEBUG] Function %s with type = %d and return type = %d\n", decAux->symbol->text, decAux->symbol->type, terc->son[0]->symbol->datatype);
+                                }
+                            }
+                        }
+
                     }
 
 
@@ -228,6 +274,98 @@ void setDeclaration(AST *root)
 
                     break;
 
+
+
+                    if(dec->symbol->type == SYMBOL_VECTOR )
+                    {
+                        fprintf(stderr, "[SEMANTIC] Attributing scalar to a vector (%s) type;\n", dec->symbol->text);
+                    }
+                    else if(dec->symbol->type == SYMBOL_FUNCTION)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Attributing scalar to a function (%s) type;\n", dec->symbol->text);
+                    }
+                    else if(asc->type == AST_SYMBOL)
+                    {
+                        if(asc->symbol->type == SYMBOL_FUNCTION)
+                        {
+                            fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", asc->symbol->text);
+                        }
+                    }
+                    else if(asc->type == AST_LT || asc->type == AST_GT || asc->type == AST_LE || asc->type == AST_GE
+                        || asc->type == AST_EQ || asc->type == AST_OR || asc->type == AST_AND || asc->type == AST_NOT
+                        || asc->type == AST_ADD || asc->type == AST_SUB || asc->type == AST_MUL || asc->type == AST_DIV)
+                    {
+                        checkOperands(dec->symbol->datatype, asc);
+                    }
+
+                    break;
+
+                case AST_FUNCALL:
+
+
+                    fprintf(stderr, " ", dec->symbol->text);
+
+                    int found = 0;
+                    int i = 0, k = 0;
+
+                    AST* terc;
+                    AST* tercAux;
+                    AST* ascAux;
+
+                    astFindNode(0, getAST(),  &terc , dec->symbol->text, &found);
+
+                    int paramCounter = 0;
+                    int argumentCounter = 0;
+
+                    if(terc->type == AST_FUNC_DEC)
+                    {
+                        tercAux = terc->son[1];
+
+                        for(terc = tercAux; terc; terc = terc->son[1])
+                        {
+                            paramCounter++;
+                            //fprintf(stderr, "[FUNCALL] (%s) PARAM: ;\n", terc->son[0]->symbol->text );
+                        }
+                    }
+
+
+                    if(asc)
+                    {
+                        ascAux = asc;
+
+                        for(asc; asc; asc = asc->son[1])
+                        {
+                            argumentCounter++;
+                        }
+                    }
+
+                    asc = ascAux;
+                    terc = tercAux;
+
+                    if(argumentCounter != paramCounter)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Number of arguments in function call '%s' invalid.\n", dec->symbol->text);
+                    }
+                    else{
+                        for(i = 0; i < argumentCounter; asc = asc->son[1], i++)
+                        {
+                            for(k = 0; k < argumentCounter - i - 1; terc = terc->son[1], k++);
+
+                            //fprintf(stderr, "[FUNCALL] (%s) ARG, type = %d .\n", terc->son[0]->symbol->text, terc->son[0]->symbol->datatype);
+                            //fprintf(stderr, "[FUNCALL] (%s) PARAM, type = %d.\n", asc->son[0]->symbol->text, asc->son[0]->symbol->datatype);
+
+                            if(terc->son[0]->symbol->datatype != asc->son[0]->symbol->datatype )
+                            {
+                                if(!((terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT) &&
+                                 (asc->son[0]->symbol->datatype == DATATYPE_CHAR || asc->son[0]->symbol->datatype == DATATYPE_INT)))
+                                fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", terc->son[0]->symbol->text, asc->son[0]->symbol->text);
+                            }
+
+                            terc = tercAux;
+                        }
+                    }
+
+                    break;
 
 
                 default: break;

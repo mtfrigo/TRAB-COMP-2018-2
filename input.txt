@@ -1,7 +1,12 @@
 
-int vq5p : 0 0 0 0 0;
+float x = 0.3 + 0.5;
 
-float main db {
+int f d int j, char l, float u b {
+  return 5;
+}
 
+int main dint a, int cb {
+  x = f d 3, 5, 0.3 b;
+  return 0;
 }
 

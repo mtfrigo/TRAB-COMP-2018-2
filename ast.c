@@ -170,7 +170,6 @@ void astToFile(AST *node, FILE *f){
 			 	   	fprintf(f, ", ");
 				}
 		    	}
-
             		astToFile(node->son[0], f);
 
 			break;
@@ -466,7 +465,7 @@ void astFind(int level, AST *node, char* text)
 		}
 	}
 
-	if(node->type == AST_FUNC_DEC || node->type == AST_VEC_DECLARATION){
+	if(node->type == AST_FUNC_DEC || node->type == AST_VEC_DECLARATION || node->type == AST_ARG_LIST){
 		hashSetType(node->son[0]->symbol->text, SYMBOL_IDENTIFIER);
 	}
 
@@ -474,4 +473,25 @@ void astFind(int level, AST *node, char* text)
 	for (i=0; i<MAX_SONS; i++){
 		astFind(level+1, node->son[i], text);
 	}
+}
+
+AST* astFindNode(int level, AST *node, AST **terc, char* text, int *found)
+{
+	int i = 0;
+
+
+	if(node->type == AST_FUNC_DEC && strcmp(node->son[0]->symbol->text, text) == 0){
+		*terc = node;
+		*found = 1;
+	}
+
+	if(*found == 1){
+		return NULL;
+	}
+
+
+	for (i=0; i<MAX_SONS; i++){
+		if(node->son[i])
+			astFindNode(level+1, node->son[i], terc, text, found);
+	}	
 }

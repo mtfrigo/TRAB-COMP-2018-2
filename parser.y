@@ -97,7 +97,7 @@ lit_list
 	;
 
 parameters
-	: expression ',' parameters				{ $$ = astCreate(AST_PARAM_LST, 0, $3, $1, 0, 0); }
+	: expression ',' parameters				{ $$ = astCreate(AST_PARAM_LST, 0, $1, $3, 0, 0); }
 	| expression						{ $$ = astCreate(AST_PARAM_LST, 0, $1, 0, 0, 0); }
 	| { $$ = 0; }
 	;

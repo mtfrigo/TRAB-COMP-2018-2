@@ -65,5 +65,6 @@ AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST
 void astToFile(AST* node, FILE *fileTree);
 void astPrint(int level, AST* node);
 void astFind(int level, AST* node, char* text);
+AST* astFindNode(int level, AST* node,AST** terc, char* text, int* found);
 
 #endif
