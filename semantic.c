@@ -151,7 +151,8 @@ void setDeclaration(AST *root)
                                 {
                                     if(((decAux->symbol->type == DATATYPE_CHAR || decAux->symbol->type == DATATYPE_INT) && (terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT)) ||
                                         (decAux->symbol->type == DATATYPE_FLOAT  &&  terc->son[0]->symbol->datatype == DATATYPE_FLOAT))
-                                    fprintf(stderr, "[DEBUG] Function %s with type = %d and return type = %d\n", decAux->symbol->text, decAux->symbol->type, terc->son[0]->symbol->datatype);
+                                    fprintf(stderr, "[SEMANTIC] Function %s with type = %d and return type = %d\n", decAux->symbol->text, decAux->symbol->type, terc->son[0]->symbol->datatype);
+                                    SemanticErrorFlag = 1;
                                 }
                             }
                         }
@@ -225,16 +226,19 @@ void setDeclaration(AST *root)
                     if(dec->symbol->type == SYMBOL_VECTOR )
                     {
                         fprintf(stderr, "[SEMANTIC] Attributing scalar to a vector (%s) type;\n", dec->symbol->text);
+                        SemanticErrorFlag = 1;
                     }
                     else if(dec->symbol->type == SYMBOL_FUNCTION)
                     {
                         fprintf(stderr, "[SEMANTIC] Attributing scalar to a function (%s) type;\n", dec->symbol->text);
+                        SemanticErrorFlag = 1;
                     }
                     else if(asc->type == AST_SYMBOL)
                     {
                         if(asc->symbol->type == SYMBOL_FUNCTION)
                         {
                             fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", asc->symbol->text);
+                            SemanticErrorFlag = 1;
                         }
                     }
                     else if(asc->type == AST_LT || asc->type == AST_GT || asc->type == AST_LE || asc->type == AST_GE
@@ -251,10 +255,12 @@ void setDeclaration(AST *root)
                     if(dec->symbol->type == SYMBOL_SCALAR)
                     {
                         fprintf(stderr, "[SEMANTIC] Cannot index a scalar variable (%s) ;\n", dec->symbol->text );
+                        SemanticErrorFlag = 1;
                     }
                     else if(dec->symbol->type == SYMBOL_FUNCTION)
                     {
                         fprintf(stderr, "[SEMANTIC] Attributing vector to a function (%s) type;\n", dec->symbol->text);
+                        SemanticErrorFlag = 1;
                     }
                     else if(node->son[2]->type == AST_SYMBOL)
                     {
@@ -263,6 +269,7 @@ void setDeclaration(AST *root)
                         if(node->son[2]->symbol->type == SYMBOL_FUNCTION)
                         {
                             fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", node->son[2]->symbol->text);
+                            SemanticErrorFlag = 1;
                         }
                     }
                     else if(node->son[2]->type == AST_LT || node->son[2]->type == AST_GT || node->son[2]->type == AST_LE || node->son[2]->type == AST_GE
@@ -272,23 +279,24 @@ void setDeclaration(AST *root)
                         checkOperands(dec->symbol->datatype, node->son[2]);
                     }
 
-                    break;
-
 
 
                     if(dec->symbol->type == SYMBOL_VECTOR )
                     {
                         fprintf(stderr, "[SEMANTIC] Attributing scalar to a vector (%s) type;\n", dec->symbol->text);
+                        SemanticErrorFlag = 1;
                     }
                     else if(dec->symbol->type == SYMBOL_FUNCTION)
                     {
                         fprintf(stderr, "[SEMANTIC] Attributing scalar to a function (%s) type;\n", dec->symbol->text);
+                        SemanticErrorFlag = 1;
                     }
                     else if(asc->type == AST_SYMBOL)
                     {
                         if(asc->symbol->type == SYMBOL_FUNCTION)
                         {
                             fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", asc->symbol->text);
+                            SemanticErrorFlag = 1;
                         }
                     }
                     else if(asc->type == AST_LT || asc->type == AST_GT || asc->type == AST_LE || asc->type == AST_GE
@@ -303,10 +311,10 @@ void setDeclaration(AST *root)
                 case AST_FUNCALL:
 
 
-                    fprintf(stderr, " ", dec->symbol->text);
+                    fprintf(stderr, " ");
+
 
                     int found = 0;
-                    int i = 0, k = 0;
 
                     AST* terc;
                     AST* tercAux;
@@ -317,16 +325,31 @@ void setDeclaration(AST *root)
                     int paramCounter = 0;
                     int argumentCounter = 0;
 
-                    if(terc->type == AST_FUNC_DEC)
-                    {
-                        tercAux = terc->son[1];
 
-                        for(terc = tercAux; terc; terc = terc->son[1])
+                    if(found == 1)
+                    {
+
+                        if(terc->type == AST_FUNC_DEC)
                         {
-                            paramCounter++;
-                            //fprintf(stderr, "[FUNCALL] (%s) PARAM: ;\n", terc->son[0]->symbol->text );
+                            tercAux = terc->son[1];
+
+                            for(terc = tercAux; terc; terc = terc->son[1])
+                            {
+                                paramCounter++;
+                                //fprintf(stderr, "[FUNCALL] (%s) PARAM: ;\n", terc->son[0]->symbol->text );
+                            }
                         }
                     }
+                    else
+                    {
+                        fprintf(stderr, "[SEMANTIC] Call invalid function '%s'", dec->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
+
+
+
+                    
+
 
 
                     if(asc)
@@ -345,8 +368,12 @@ void setDeclaration(AST *root)
                     if(argumentCounter != paramCounter)
                     {
                         fprintf(stderr, "[SEMANTIC] Number of arguments in function call '%s' invalid.\n", dec->symbol->text);
+                        SemanticErrorFlag = 1;
                     }
                     else{
+
+                        int i = 0, k = 0;
+
                         for(i = 0; i < argumentCounter; asc = asc->son[1], i++)
                         {
                             for(k = 0; k < argumentCounter - i - 1; terc = terc->son[1], k++);
@@ -358,7 +385,11 @@ void setDeclaration(AST *root)
                             {
                                 if(!((terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT) &&
                                  (asc->son[0]->symbol->datatype == DATATYPE_CHAR || asc->son[0]->symbol->datatype == DATATYPE_INT)))
-                                fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", terc->son[0]->symbol->text, asc->son[0]->symbol->text);
+                                 {
+                                    fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", terc->son[0]->symbol->text, asc->son[0]->symbol->text);
+                                    SemanticErrorFlag = 1;
+                                 }
+                                
                             }
 
                             terc = tercAux;
@@ -374,6 +405,13 @@ void setDeclaration(AST *root)
         }
     }
 
+    if(SemanticErrorFlag == 1)
+    {
+        fprintf(stderr, "At least one semantic error!\n");
+        exit(4);
+    }
+
+
 
 }
 
@@ -382,11 +420,13 @@ void checkDeclaration(AST* dec, AST* asc)
     if(dec->symbol->datatype == DATATYPE_INT && !(asc->symbol->datatype == DATATYPE_INT || asc->symbol->datatype == DATATYPE_CHAR))
     {
         fprintf(stderr, "[SEMANTIC] Symbol %s must be integer.\n", dec->symbol->text);
+        SemanticErrorFlag = 1;
 
     }
     else if(dec->symbol->datatype == DATATYPE_FLOAT && asc->symbol->datatype != DATATYPE_FLOAT)
     {
         fprintf(stderr, "[SEMANTIC] Symbol %s must be float.\n", dec->symbol->text);
+        SemanticErrorFlag = 1;
     }
 }
 
@@ -471,6 +511,7 @@ void checkOperands(int datatype, AST *node)
             if(node->son[0]->datatype != node->son[1]->datatype)
             {
                 fprintf(stderr, "[SEMANTIC] Cannot mix different datatypes in boolean expression.\n");
+                SemanticErrorFlag = 1;
             }
 
             node->datatype = AST_DATATYPE_BOOL;

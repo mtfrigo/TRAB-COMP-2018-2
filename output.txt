@@ -1,8 +1,8 @@
-float x = 0.3 + 0.5;
-int f dint j, char l, float ub{
-return 5 + 5;
+float i = 0.3;
+float f dint j, char l, float ub{
+return 5;
 }int main dint a, int cb{
-x = fd 0.3, 5, 3 b
+i = fd 0.3, 'c', 5 b
 ;
 return 0;
 }

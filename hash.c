@@ -112,6 +112,7 @@ void hashCheckUndeclared(void)
             if(node->type == TK_IDENTIFIER)
             {
                 fprintf(stderr, "[SEMANTIC] Variable %s not declared!\n", node->text);
+                exit(4);
             }
             else if(node->type == LIT_CHAR || node->type == LIT_INTEGER || node->type == LIT_FLOAT )
             {

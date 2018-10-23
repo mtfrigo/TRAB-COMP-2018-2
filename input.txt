@@ -1,12 +1,14 @@
 
-float x = 0.3 + 0.5;
+float i = 0.3;
 
-int f d int j, char l, float u b {
+
+float f d int j, char l, float u b {
+  
   return 5;
 }
 
 int main dint a, int cb {
-  x = f d 3, 5, 0.3 b;
+  i = fd 5, 'c', 0.3b;
   return 0;
 }
 

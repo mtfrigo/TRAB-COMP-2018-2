@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "semantic.h"
 
 int yyparse(void);
 int yylex(void);
@@ -50,7 +51,7 @@ int main(int argc, char** argv)
 
 	result = yyparse();
 
-	if( result == 0 )
+	if(result == 0)
 	{
 		fprintf(stderr, "Hash table of the input file: \n");
 		hashPrint();
@@ -62,7 +63,9 @@ int main(int argc, char** argv)
 
 		checkUndeclared();
 		setDeclaration(getAST());
-		//fprintf(stderr, "\nSource code generated in '%s' file.\n", argv[2]);
+
+
+		fprintf(stderr, "\nNo semantic errors!\n");
 
 		exit(0);
 	}
