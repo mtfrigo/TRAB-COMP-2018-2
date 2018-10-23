@@ -1,11 +1,7 @@
-int i = 5 and 5;
 
-
-
+int vq5p : 0 0 0 0 0;
 
 float main db {
-  a = 7;
-  nico = 5;
-  kkk = 7;
+
 }
 

@@ -179,7 +179,6 @@ expression
 	| expression '/' expression					{ $$ = astCreate(AST_DIV, 0, $1, $3, 0, 0); }
 	| identifier						
 	| identifier 'q' expression 'p'				{ $$ = astCreate(AST_VEC, 0, $1, $3, 0, 0); }
-	| identifier 'd' 'b'					{ $$ = 0; }
 	| identifier 'd' parameters 'b'				{ $$ = astCreate(AST_FUNCALL, 0, $1, $3, 0, 0); }
 	| 'd' expression 'b'						{ $$ = astCreate(AST_DB, 0, $2, 0, 0, 0); }
 	;
