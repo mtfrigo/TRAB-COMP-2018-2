@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "semantic.h"
-#include "tacs.h"
 
 int yyparse(void);
 int yylex(void);
@@ -64,8 +63,6 @@ int main(int argc, char** argv)
 
 		checkUndeclared();
 		setDeclaration(getAST());
-
-		//tacPrintBackwards(tacGenerate(getAST()));
 
 		if(SemanticErrorFlag == 1)
 		{

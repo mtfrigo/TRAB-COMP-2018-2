@@ -1,14 +1,17 @@
 
-float i = 0.3;
+
+int aq2p: 'c' 2;
 
 
-float f d int j, char l, float u b {
-  
-  return 5;
+int main d int a, float cb {
+    a = 7;
+
+    a = 2 + 9;
+
+    a = 2;
+
+    if d 5 and 5 b then ;
+
+    return a;
+    
 }
-
-int main dint a, int cb {
-  i = fd 5, 'c', 0.3b;
-  return 0;
-}
-

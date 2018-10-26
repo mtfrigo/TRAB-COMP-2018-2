@@ -1,8 +1,9 @@
-float i = 0.3;
-float f dint j, char l, float ub{
-return 5;
-}int main dint a, int cb{
-i = fd 0.3, 'c', 5 b
+int a q2p: 'c' 2;
+int main dint a, float cb{
+a = 7;
+a = 2 + 9;
+a = 2;
+if d 5 and 5 b then
 ;
-return 0;
+return a;
 }

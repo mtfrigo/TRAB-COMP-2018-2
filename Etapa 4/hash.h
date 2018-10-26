@@ -35,6 +35,5 @@ HASH_NODE* hashFind(char *text);
 void hashPrint(void);
 void hashCheckUndeclared();
 void hashSetType(char * text, int type);
-HASH_NODE* makeTemp();
 
 #endif
