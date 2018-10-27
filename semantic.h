@@ -14,5 +14,10 @@ void setDeclaration(AST *node);
 void checkUndeclared();
 void checkDeclaration(AST* dec, AST* asc);
 void checkOperands(int datatype, AST *node);
+void checkAlreadDeclared(AST* dec, int SYMBOL_NUMBER);
+void checkVecDeclaration(int datatype, AST* node);
+void checkValidDeclaration(AST* node);
+void setArgDeclaration(AST* node);
+void checkCmds(AST* node);
 
 #endif

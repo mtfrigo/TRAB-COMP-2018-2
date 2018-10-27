@@ -521,7 +521,7 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "scanner.l"
-#line 2 "scanner.l"
+#line 3 "scanner.l"
 
 #include "y.tab.h"
 #include "hash.h"

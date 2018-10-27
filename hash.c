@@ -33,7 +33,7 @@ HASH_NODE* hashInsert(int type, char *text){
     int address;
     address = hashAddress(text);
 
-    if(newnode = hashFind(text))
+    if((newnode = hashFind(text)))
         return newnode;
 
     //fprintf(stderr, "%d, type %s \n", type, text);

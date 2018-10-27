@@ -164,8 +164,6 @@ void setDeclarations(AST *root)
 
                 case AST_VEC_DECLARATION:
 
-                
-
                     if(dec->symbol)
                     {
                         if(dec->symbol->type != SYMBOL_IDENTIFIER)
