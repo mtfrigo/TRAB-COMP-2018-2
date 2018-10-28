@@ -5,9 +5,7 @@ int mat q10p;
 float f = 10.55;
 char c = 'x';
 char x = 65;
-int incn dint a, float cb{
-return 2;
-}int main db{
+int main db{
 a = 7;
 v qap = 90;
 v q5p = 50;
@@ -18,9 +16,16 @@ print "Digite um numero:
 read a;
 while i < 10
 {
+i = incnd 6, 5, 1, i b
+;
+a = incnd 1, a b
+;
 };
 print "Incrementado algumas vezes fica ", a, "
 ";
+while i < 10
+i = incnd 1, i b
+;
 if a == 5 then
 print "Parou no meio
 ";
@@ -79,4 +84,12 @@ else
 };
 {
 };
+}int incn dint x, char oib{
+return x + n;
+}int incn dint xb{
+return x + n;
+}int incn dint x, int n, int x2, int n2, int x3, int n3, int oi q5pb{
+return x + n;
+}int incn dint x q80p, int x3, int oi q5p, int n3b{
+return x + n;
 }

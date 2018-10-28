@@ -19,5 +19,7 @@ void checkVecDeclaration(int datatype, AST* node);
 void checkValidDeclaration(AST* node);
 void setArgDeclaration(AST* node);
 void checkCmds(AST* node);
+void checkReturn(int datatype, AST* node);
+void checkFuncall(AST* node);
 
 #endif

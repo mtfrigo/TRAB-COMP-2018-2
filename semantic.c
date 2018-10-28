@@ -262,10 +262,13 @@ void checkCmd(AST* node)
 
 
             if(son1)
+            {
                 if(son1->type == AST_COMMAND)
                     checkCmds(son1);
                 else
                     checkCmd(son1);
+            }
+                
 
             break;
 
@@ -277,16 +280,22 @@ void checkCmd(AST* node)
                 checkOperands(AST_DATATYPE_BOOL, son0);
 
             if(son1)
+            {
                 if(son1->type == AST_COMMAND)
                     checkCmds(son1);
                 else
                     checkCmd(son1);
+            }
+                
 
             if(son2)
+            {
                 if(son2->type == AST_COMMAND)
                     checkCmds(son2);
                 else
                     checkCmd(son2);
+            }
+                
                     
             break;
 
@@ -343,11 +352,23 @@ void checkFuncall(AST* node)
             {
                 for(k = 0; k < argumentCounter - i - 1; fundec = fundec->son[1], k++);
 
-                if(fundec->son[0]->symbol->datatype != son1->son[0]->symbol->datatype )
+                if(fundec->son[0]->type == AST_VEC)
                 {
-                    fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", fundec->son[0]->symbol->text, son1->son[0]->symbol->text);
-                    SemanticErrorFlag = 1;
+                    if(fundec->son[0]->son[0]->symbol->datatype != son1->son[0]->symbol->datatype )
+                    {
+                        fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", fundec->son[0]->son[0]->symbol->text, son1->son[0]->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
                 }
+                else
+                {
+                    if(fundec->son[0]->symbol->datatype != son1->son[0]->symbol->datatype )
+                    {
+                        fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", fundec->son[0]->symbol->text, son1->son[0]->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
+                }
+                
 
                 fundec = _fundec;
             }
@@ -379,9 +400,38 @@ void setArgDeclaration(AST* node)
     for(; node; node = node->son[1])
     {
         switch(node->son[0]->type){
-            case AST_INT_TYPE:node->son[0]->symbol->datatype = DATATYPE_INT; break;
-            case AST_FLOAT_TYPE:node->son[0]->symbol->datatype = DATATYPE_FLOAT; break;
-            case AST_CHAR_TYPE:node->son[0]->symbol->datatype = DATATYPE_CHAR; break;
+            case AST_INT_TYPE:node->son[0]->symbol->datatype = DATATYPE_INT; 
+                node->son[0]->symbol->type = SYMBOL_SCALAR; 
+            
+                break;
+            case AST_FLOAT_TYPE:node->son[0]->symbol->datatype = DATATYPE_FLOAT;  
+                node->son[0]->symbol->type = SYMBOL_SCALAR; 
+            
+                break;
+            case AST_CHAR_TYPE:node->son[0]->symbol->datatype = DATATYPE_CHAR; 
+                node->son[0]->symbol->type = SYMBOL_SCALAR;  
+            
+                break;
+            case AST_VEC: 
+                if(node->son[0]->son[0]->type)
+                {
+                    switch(node->son[0]->son[0]->type){
+                        case AST_INT_TYPE:node->son[0]->son[0]->symbol->datatype = DATATYPE_INT;  
+                            node->son[0]->son[0]->symbol->type = SYMBOL_VECTOR; 
+                        
+                            break;
+                        case AST_FLOAT_TYPE:node->son[0]->son[0]->symbol->datatype = DATATYPE_FLOAT; 
+                            node->son[0]->son[0]->symbol->type = SYMBOL_VECTOR;  
+                        
+                            break;
+                        case AST_CHAR_TYPE:node->son[0]->son[0]->symbol->datatype = DATATYPE_CHAR;  
+                            node->son[0]->son[0]->symbol->type = SYMBOL_VECTOR; 
+                        
+                            break;
+                    }
+                
+                }
+                break;
         }
     }
 }
@@ -474,10 +524,13 @@ void checkOperands(int datatype, AST *node)
             node->datatype = node->son[0]->datatype;
 
             if(node->son[0]->symbol)
-            if(node->son[0]->symbol->datatype == DATATYPE_INT || node->son[0]->symbol->datatype == DATATYPE_CHAR)
-                node->datatype = AST_DATATYPE_INT;
-            else
-                node->datatype = AST_DATATYPE_FLOAT;
+            {
+                if(node->son[0]->symbol->datatype == DATATYPE_INT || node->son[0]->symbol->datatype == DATATYPE_CHAR)
+                    node->datatype = AST_DATATYPE_INT;
+                else
+                    node->datatype = AST_DATATYPE_FLOAT;
+            }
+            
             break;
         case AST_FUNCALL:
             node->datatype = node->son[0]->datatype;
