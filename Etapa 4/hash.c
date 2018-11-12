@@ -33,7 +33,7 @@ HASH_NODE* hashInsert(int type, char *text){
     int address;
     address = hashAddress(text);
 
-    if(newnode = hashFind(text))
+    if((newnode = hashFind(text)))
         return newnode;
 
     //fprintf(stderr, "%d, type %s \n", type, text);
@@ -118,7 +118,7 @@ void hashCheckUndeclared(void)
             {
                 switch(node->type)
                 {
-                    case LIT_CHAR: node->datatype = DATATYPE_CHAR; break;
+                    case LIT_CHAR: node->datatype = DATATYPE_INT; break;
                     case LIT_INTEGER: node->datatype = DATATYPE_INT; break;
                     case LIT_FLOAT: node->datatype = DATATYPE_FLOAT; break;
                 }
@@ -127,4 +127,12 @@ void hashCheckUndeclared(void)
             }
         }
     }
+}
+
+HASH_NODE* makeTemp()
+{
+    static int serial = 0;
+    static char name[100];
+    sprintf(name, "GerofrigoliciousTemp%d", serial++);
+    return hashInsert(SYMBOL_SCALAR, name);
 }

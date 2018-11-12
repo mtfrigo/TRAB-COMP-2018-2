@@ -1,3 +1,4 @@
+
 %{
 
 #include "y.tab.h"
@@ -11,7 +12,6 @@ int running;
 int lineNumber;
 
 %}
-
 
 %x COMMENT
 %x STRING

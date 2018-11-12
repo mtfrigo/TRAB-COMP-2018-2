@@ -1,23 +1,23 @@
-etapa3: main.o hash.o lex.yy.o y.tab.o ast.o semantic.o
-	gcc main.o hash.o lex.yy.o y.tab.o ast.o semantic.o -o etapa4
+etapa4: main.o hash.o lex.yy.o y.tab.o ast.o semantic.o
+	gcc main.o hash.o lex.yy.o y.tab.o ast.o semantic.o -o etapa5
 
 main.o: main.c
-	gcc -c main.c
+	gcc -c -Wall  main.c
 
 ast.o: ast.c
-	gcc -c ast.c
+	gcc -c -Wall ast.c
 
 hash.o: hash.c
-	gcc -c hash.c
+	gcc -c -Wall hash.c
 
 semantic.o: semantic.c
-	gcc -c semantic.c
+	gcc -c -Wall semantic.c
 
 lex.yy.o: lex.yy.c
-	gcc -c lex.yy.c
+	gcc -c -Wall lex.yy.c
 
 y.tab.o: y.tab.c
-	gcc -c y.tab.c
+	gcc -c -Wall y.tab.c
 
 lex.yy.c: y.tab.c scanner.l
 	lex scanner.l

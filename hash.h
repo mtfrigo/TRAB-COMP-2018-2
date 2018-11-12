@@ -13,6 +13,7 @@
 #define SYMBOL_SCALAR 3
 #define SYMBOL_VECTOR 4
 #define SYMBOL_FUNCTION 5
+#define SYMBOL_LABEL 6
 
 #define DATATYPE_INT 1
 #define DATATYPE_CHAR 2
@@ -36,5 +37,6 @@ void hashPrint(void);
 void hashCheckUndeclared();
 void hashSetType(char * text, int type);
 HASH_NODE* makeTemp();
+HASH_NODE* makeLabel();
 
 #endif

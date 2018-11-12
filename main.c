@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 		checkUndeclared();
 		setDeclaration(getAST());
 
-		//tacPrintBackwards(tacGenerate(getAST()));
+		tacPrintForward(tacReverse(tacGenerate(getAST())));
 
 		if(SemanticErrorFlag == 1)
 		{

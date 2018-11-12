@@ -12,415 +12,477 @@ void setDeclaration(AST *root)
 {
     AST *node;
     AST *dec;
-    AST *asc;
-    AST *terc;
+
+    if(!root) return;
 
     for(node = root; node; node = node->son[1])
     {
 
-
-        if(node->type == AST_DEC)
-        {
-            setDeclaration(node->son[0]);
-            node = node->son[1];
-        }
-        
-        if(node->type == AST_FUNC_DEC)
-        {
-            setDeclaration(node->son[2]);
-        }
-
-        if(node->type == AST_COMMAND)
-        {
-            setDeclaration(node->son[0]);
-        }
-
-        if(node->type == AST_COMMAND_LST)
-        {
-            setDeclaration(node->son[0]);
-        }
-
-        if(node->type == AST_FUNCALL)
-        {
-            setDeclaration(node->son[0]);
-        }
-
-       
-    
         dec = node->son[0];
-        asc = node->son[1];
-        
-        if(dec)
-        {
+
+        if(dec){
+
+        //fprintf(stderr, "[DEBUG] Node type %d; Dec type %d.\n", node->type, dec->type);
 
             switch(node->type)
             {
-                case AST_VAR_DECLARATION:
 
-                    if(dec->symbol){
-                        if(dec->symbol->type != SYMBOL_IDENTIFIER)
-                        {
-                            fprintf(stderr, "[SEMANTIC] Symbol %s redeclared.\n", dec->symbol->text);
-                            SemanticErrorFlag = 1;
-                        }
-                    }
-                    
-                    dec->symbol->type = SYMBOL_SCALAR;
-
-                    if(dec->type == AST_INT_TYPE || dec->type == AST_CHAR_TYPE)
-                    {
-                        dec->symbol->datatype = DATATYPE_INT;
-                    }
-                    else
-                    {
-                        dec->symbol->datatype = DATATYPE_FLOAT;
-                    }
-
-                    if(asc)
-                    {
-                        if(asc->type == AST_SYMBOL)
-                        {
-                            checkDeclaration(dec, asc);
-                        }
-                        else if(asc->type == AST_LT || asc->type == AST_GT || asc->type == AST_LE || asc->type == AST_GE
-                            || asc->type == AST_EQ || asc->type == AST_OR || asc->type == AST_AND || asc->type == AST_NOT
-                            || asc->type == AST_ADD || asc->type == AST_SUB || asc->type == AST_MUL || asc->type == AST_DIV)
-                        {
-                            checkOperands(dec->symbol->datatype, asc);
-                        }
-                    }
-                    
-
-
-
+                case AST_DEC:
+                    setDeclaration(dec);
                     break;
 
-                case AST_FUNC_DEC: 
-                    
-                    if(dec->symbol)
+                case AST_VAR_DECLARATION:
+                    checkAlreadDeclared(dec, SYMBOL_SCALAR);
+
+                    if(node->son[1])
                     {
-                        if(dec->symbol->type != SYMBOL_IDENTIFIER)
-                        {
-                            fprintf(stderr, "[SEMANTIC] Symbol %s redeclared.\n", dec->symbol->text);
-                            SemanticErrorFlag = 1;
-                        }
+                        if(node->son[1]->type == AST_SYMBOL)
+                            checkValidDeclaration(node);
+                        else if(node->son[1]->type == AST_ADD || node->son[1]->type == AST_SUB || node->son[1]->type == AST_MUL || node->son[1]->type == AST_DIV
+                                || node->son[1]->type == AST_LT || node->son[1]->type == AST_GT || node->son[1]->type == AST_LE || node->son[1]->type == AST_GE
+                                || node->son[1]->type == AST_EQ || node->son[1]->type == AST_OR || node->son[1]->type == AST_AND || node->son[1]->type == AST_NOT)
+                            checkOperands(dec->symbol->datatype, node->son[1]);
                     }
-
-                    AST* decAux = dec;
-
-                    dec->symbol->type = SYMBOL_FUNCTION;
-
-                    if(dec->type == AST_INT_TYPE || dec->type == AST_CHAR_TYPE)
-                    {
-                        dec->symbol->datatype = DATATYPE_INT;
-                    }
-                    else
-                    {
-                        dec->symbol->datatype = DATATYPE_FLOAT;
-                    }
-
-                    if(asc)
-                    {
-                        for(asc; asc; asc = asc->son[1])
-                        {
-                            dec = asc->son[0];
-                            
-                            switch(dec->type){
-                                case AST_INT_TYPE:dec->symbol->datatype = DATATYPE_INT; break;
-                                case AST_FLOAT_TYPE:dec->symbol->datatype = DATATYPE_FLOAT; break;
-                                case AST_CHAR_TYPE:dec->symbol->datatype = DATATYPE_CHAR; break;
-                            }
-                        }
-
-                        if(node->son[2])
-                        {
-                            terc = node->son[2];
-
-                            while(terc->type != AST_RETURN)
-                            {
-                                if(terc->son[1])
-                                {
-                                    terc = terc->son[1];
-                                }
-                                else
-                                {
-                                    terc = terc->son[0];
-                                }
-                            }
-
-                            if(terc->type == AST_RETURN)
-                            {
-                                if(terc->son[0]->type == AST_SYMBOL)
-                                {
-                                    if(dec->symbol->datatype != terc->son[0]->symbol->datatype)
-                                    {
-                                        if(((decAux->symbol->type == DATATYPE_CHAR || decAux->symbol->type == DATATYPE_INT) && (terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT)) ||
-                                            (decAux->symbol->type == DATATYPE_FLOAT  &&  terc->son[0]->symbol->datatype == DATATYPE_FLOAT))
-                                        fprintf(stderr, "[SEMANTIC] Function %s with type = %d and return type = %d\n", decAux->symbol->text, decAux->symbol->type, terc->son[0]->symbol->datatype);
-                                        SemanticErrorFlag = 1;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    
-
-
-                 break;
+                    break;
 
                 case AST_VEC_DECLARATION:
+                    checkAlreadDeclared(dec, SYMBOL_VECTOR);
 
-                
-
-                    if(dec->symbol)
-                    {
-                        if(dec->symbol->type != SYMBOL_IDENTIFIER)
-                        {
-                            fprintf(stderr, "[SEMANTIC] Symbol %s redeclared.\n", dec->symbol->text);
-                            SemanticErrorFlag = 1;
-                        }
-                    }
-
-                    dec->symbol->type = SYMBOL_VECTOR;
-                    
-                    if(dec->type == AST_INT_TYPE || dec->type == AST_CHAR_TYPE)
-                    {
-                        dec->symbol->datatype = DATATYPE_INT;
-                    }
-                    else
-                    {
-                        dec->symbol->datatype = DATATYPE_FLOAT;
-                    }
+                    if(node->son[1])
+                        if(node->son[1]->type == AST_SYMBOL)
+                            if(node->son[1]->symbol->datatype != DATATYPE_CHAR && node->son[1]->symbol->datatype != DATATYPE_INT)
+                            {
+                                fprintf(stderr, "[SEMANTIC] Index must be INTEGER.\n");
+                                SemanticErrorFlag = 1;
+                            }
 
                     if(node->son[2])
-                    {
-                        terc = node->son[2];
-
-                        while(terc->type == terc->son[0]->type)
-                        {
-                            if(dec->symbol->datatype == DATATYPE_INT &&
-                            !(terc->son[1]->symbol->datatype == DATATYPE_CHAR || terc->son[1]->symbol->datatype == DATATYPE_INT)){
-                                fprintf(stderr, "[SEMANTIC] Argument %s invalid in vector %s declaration; expected a integer;\n", terc->son[1]->symbol->text, dec->symbol->text);
-                            } 
-
-                            if(dec->symbol->datatype == DATATYPE_FLOAT &&
-                            (terc->son[1]->symbol->datatype == DATATYPE_CHAR || terc->son[1]->symbol->datatype == DATATYPE_INT)){
-                                fprintf(stderr, "[SEMANTIC] Argument %s invalid in vector %s declaration; expected a float;\n", terc->son[1]->symbol->text, dec->symbol->text);
-                            }
-
-                            terc = terc->son[0];
-                        }
-
-                        if(dec->symbol->datatype == DATATYPE_INT &&
-                        !(terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT)){
-                            fprintf(stderr, "[SEMANTIC] Argument %s invalid in vector %s declaration; expected a integer;\n", terc->son[0]->symbol->text, dec->symbol->text);
-                        } 
-
-                        if(dec->symbol->datatype == DATATYPE_FLOAT &&
-                        (terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT)){
-                            fprintf(stderr, "[SEMANTIC] Argument %s invalid in vector %s declaration; expected a float;\n", terc->son[0]->symbol->text, dec->symbol->text);
-                        }
-
-
-                    }
-
-
-                    break;
-                case AST_ATTRIB:
-
-
-                    if(dec->symbol->type == SYMBOL_VECTOR )
-                    {
-                        fprintf(stderr, "[SEMANTIC] Attributing scalar to a vector (%s) type;\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-                    else if(dec->symbol->type == SYMBOL_FUNCTION)
-                    {
-                        fprintf(stderr, "[SEMANTIC] Attributing scalar to a function (%s) type;\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-                    else if(asc){
-                        if(asc->type == AST_SYMBOL)
-                        {
-                            if(asc->symbol->type == SYMBOL_FUNCTION)
-                            {
-                                fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", asc->symbol->text);
-                                SemanticErrorFlag = 1;
-                            }
-                        }
-                        else if(asc->type == AST_LT || asc->type == AST_GT || asc->type == AST_LE || asc->type == AST_GE
-                            || asc->type == AST_EQ || asc->type == AST_OR || asc->type == AST_AND || asc->type == AST_NOT
-                            || asc->type == AST_ADD || asc->type == AST_SUB || asc->type == AST_MUL || asc->type == AST_DIV)
-                        {
-                            checkOperands(dec->symbol->datatype, asc);
-                        }
-                    }
+                        checkVecDeclaration(dec->symbol->datatype, node->son[2]);
 
                     break;
 
-                case AST_ATTRIB_VEC:
+                case AST_FUNC_DEC:
+                    checkAlreadDeclared(dec, SYMBOL_FUNCTION);
 
-                    if(dec->symbol->type == SYMBOL_SCALAR)
-                    {
-                        fprintf(stderr, "[SEMANTIC] Cannot index a scalar variable (%s) ;\n", dec->symbol->text );
-                        SemanticErrorFlag = 1;
-                    }
-                    else if(dec->symbol->type == SYMBOL_FUNCTION)
-                    {
-                        fprintf(stderr, "[SEMANTIC] Attributing vector to a function (%s) type;\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-                    else if(node->son[2]->type == AST_SYMBOL)
-                    {
+                    setArgDeclaration(node->son[1]);
 
+                    checkReturn(dec->symbol->datatype, node->son[2]->son[0]);
 
-                        if(node->son[2]->symbol->type == SYMBOL_FUNCTION)
-                        {
-                            fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", node->son[2]->symbol->text);
-                            SemanticErrorFlag = 1;
-                        }
-                    }
-                    else if(node->son[2]->type == AST_LT || node->son[2]->type == AST_GT || node->son[2]->type == AST_LE || node->son[2]->type == AST_GE
-                        || node->son[2]->type == AST_EQ || node->son[2]->type == AST_OR || node->son[2]->type == AST_AND || node->son[2]->type == AST_NOT
-                        || node->son[2]->type == AST_ADD || node->son[2]->type == AST_SUB || node->son[2]->type == AST_MUL || node->son[2]->type == AST_DIV)
-                    {
-                        checkOperands(dec->symbol->datatype, node->son[2]);
-                    }
-
+                    checkCmds(node->son[2]);
+                    
                     break;
 
-
-                    if(dec->symbol->type == SYMBOL_VECTOR )
-                    {
-                        fprintf(stderr, "[SEMANTIC] Attributing scalar to a vector (%s) type;\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-                    else if(dec->symbol->type == SYMBOL_FUNCTION)
-                    {
-                        fprintf(stderr, "[SEMANTIC] Attributing scalar to a function (%s) type;\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-                    else if(asc)
-                    {
-                        if(asc->type == AST_SYMBOL)
-                        {
-                            if(asc->symbol->type == SYMBOL_FUNCTION)
-                            {
-                                fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", asc->symbol->text);
-                                SemanticErrorFlag = 1;
-                            }
-                        }
-                        else if(asc->type == AST_LT || asc->type == AST_GT || asc->type == AST_LE || asc->type == AST_GE
-                            || asc->type == AST_EQ || asc->type == AST_OR || asc->type == AST_AND || asc->type == AST_NOT
-                            || asc->type == AST_ADD || asc->type == AST_SUB || asc->type == AST_MUL || asc->type == AST_DIV)
-                        {
-                            checkOperands(dec->symbol->datatype, asc);
-                        }
-                    }
-
-                    break;
-
-                case AST_FUNCALL:
-                {
-                    int found = 0;
-
-                    AST* terc;
-                    AST* tercAux;
-                    AST* ascAux;
-
-                    astFindNode(0, getAST(),  &terc , dec->symbol->text, &found);
-
-                    int paramCounter = 0;
-                    int argumentCounter = 0;
-
-                    if(found == 1)
-                    {
-                        if(terc->type == AST_FUNC_DEC)
-                        {
-                            tercAux = terc->son[1];
-
-                            for(terc = tercAux; terc; terc = terc->son[1])
-                            {
-                                paramCounter++;
-                                //fprintf(stderr, "[FUNCALL] (%s) PARAM: ;\n", terc->son[0]->symbol->text );
-                            }
-                        }
-                    }
-                    else
-                    {
-                        fprintf(stderr, "[SEMANTIC] Call invalid function '%s'", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-
-                    if(asc)
-                    {
-                        ascAux = asc;
-
-                        for(asc; asc; asc = asc->son[1])
-                        {
-                            argumentCounter++;
-                        }
-                    }
-
-                    asc = ascAux;
-                    terc = tercAux;
-
-                    if(argumentCounter != paramCounter)
-                    {
-                        fprintf(stderr, "[SEMANTIC] Number of arguments in function call '%s' invalid.\n", dec->symbol->text);
-                        SemanticErrorFlag = 1;
-                    }
-                    else{
-
-                        int i = 0, k = 0;
-
-                        for(i = 0; i < argumentCounter; asc = asc->son[1], i++)
-                        {
-                            for(k = 0; k < argumentCounter - i - 1; terc = terc->son[1], k++);
-
-                            //fprintf(stderr, "[FUNCALL] (%s) ARG, type = %d .\n", terc->son[0]->symbol->text, terc->son[0]->symbol->datatype);
-                            //fprintf(stderr, "[FUNCALL] (%s) PARAM, type = %d.\n", asc->son[0]->symbol->text, asc->son[0]->symbol->datatype);
-
-                            if(terc->son[0]->symbol->datatype != asc->son[0]->symbol->datatype )
-                            {
-                                if(!((terc->son[0]->symbol->datatype == DATATYPE_CHAR || terc->son[0]->symbol->datatype == DATATYPE_INT) &&
-                                 (asc->son[0]->symbol->datatype == DATATYPE_CHAR || asc->son[0]->symbol->datatype == DATATYPE_INT)))
-                                 {
-                                    fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", terc->son[0]->symbol->text, asc->son[0]->symbol->text);
-                                    SemanticErrorFlag = 1;
-                                 }
-                                
-                            }
-
-                            terc = tercAux;
-                        }
-                    }
-
-                    break;
-
-                }
                 default: break;
 
             }
         }
+
+
+    }
+}
+
+void checkReturn(int datatype, AST* node)
+{
+    if(!node) return;
+
+    AST* son = node->son[0];
+
+    if(son)
+    {
+        if(son->type != AST_RETURN)
+            checkReturn(datatype, node->son[1]);
+        else
+        {
+            if(son->son[0]->type == AST_SYMBOL)
+            {
+                if(son->son[0]->symbol->datatype != datatype)
+                    fprintf(stderr, "[SEMANTIC] Function returning worng datatype.\n");
+            }
+            else if(son->son[0]->type == AST_ADD || son->son[0]->type == AST_SUB || son->son[0]->type == AST_MUL || son->son[0]->type == AST_DIV)
+                    checkOperands(datatype, son->son[0]);
+            else if(son->son[0]->type == AST_LT || son->son[0]->type == AST_GT || son->son[0]->type == AST_LE || son->son[0]->type == AST_GE
+                    || son->son[0]->type == AST_EQ || son->son[0]->type == AST_OR || son->son[0]->type == AST_AND || son->son[0]->type == AST_NOT)
+            {
+                fprintf(stderr, "[SEMANTIC] Cannot attribute bool to a variable.\n");
+                SemanticErrorFlag = 1;
+            }
+            else if(son->son[0]->type == AST_FUNCALL)
+            {
+                if(son->son[0]->son[0]->symbol->datatype != datatype)
+                {
+                    fprintf(stderr, "[SEMANTIC] Return datatype dont match with function.\n");
+                    SemanticErrorFlag = 1;
+                }
+                checkFuncall(son->son[0]);
+            }
+            
+        }
     }
 
     
 
+}
+
+void checkCmd(AST* node)
+{
+    AST* son0;
+    AST* son1;
+    AST* son2;
+
+    son0 =  node->son[0];
+    son1 =  node->son[1];
+    son2 =  node->son[2];
+
+    if(son0)
+    switch(node->type)
+    {
+        case AST_ATTRIB: 
+
+            //fprintf(stderr,"[ATRIB] %s (type = %d) = %s (type = %d);\n", son0->symbol->text,son0->symbol->datatype,son1->symbol->text,son1->symbol->datatype);
+
+            if(son0->symbol->type == SYMBOL_VECTOR )
+            {
+                fprintf(stderr, "[SEMANTIC] Attributing scalar to a vector (%s) type;\n", son0->symbol->text);
+                SemanticErrorFlag = 1;
+            }
+            else if(son1)
+            {
+                if(son1->type == AST_SYMBOL)
+                {
+                    if(son1->symbol->type == SYMBOL_FUNCTION)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", son1->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
+                    else if(son1->symbol->type == SYMBOL_SCALAR)
+                    {
+                        if(son1->symbol->datatype != son0->symbol->datatype)
+                        {
+                            if(son0->symbol->datatype == 1)
+                                fprintf(stderr, "[SEMANTIC] Expecting INTEGER datatype.\n");
+                            else if(son0->symbol->datatype == 3)
+                                fprintf(stderr, "[SEMANTIC] Expecting FLOAT datatype.\n");
+                            
+                            SemanticErrorFlag = 1;
+                        }
+                    }
+                }
+                else if(son1->type == AST_ADD || son1->type == AST_SUB || son1->type == AST_MUL || son1->type == AST_DIV)
+                    checkOperands(son0->symbol->datatype, son1);
+                else if(son1->type == AST_LT || son1->type == AST_GT || son1->type == AST_LE || son1->type == AST_GE
+                        || son1->type == AST_EQ || son1->type == AST_OR || son1->type == AST_AND || son1->type == AST_NOT)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Cannot attribute bool to a variable.\n");
+                        SemanticErrorFlag = 1;
+                    }
+                else if(son1->type == AST_FUNCALL)
+                {
+                    if(son1->son[0]->symbol->datatype != son0->symbol->datatype)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Datatype dont match for attribution.\n");
+                        SemanticErrorFlag = 1;
+                    }
+
+                    checkFuncall(son1);
+                }
+            }
+            break;
+        
+        case AST_ATTRIB_VEC:
+
+            if(son0->symbol->type == SYMBOL_SCALAR || son0->symbol->type == SYMBOL_FUNCTION )
+            {
+                fprintf(stderr, "[SEMANTIC] Cannot index a scalar variable (%s);\n", son0->symbol->text);
+                SemanticErrorFlag = 1;
+            }
+
+            if(son1)
+            {
+                if(son1->type == AST_SYMBOL)
+                {
+                    if(son1->symbol->datatype != DATATYPE_CHAR && son1->symbol->datatype != DATATYPE_INT)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Index must be INTEGER.\n");
+                        SemanticErrorFlag = 1;
+                    }
+                }
+            }
+
+            if(son2)
+            {
+                if(son2->type == AST_SYMBOL)
+                {
+                    if(son2->symbol->type == SYMBOL_FUNCTION)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Cannot use function without parameters (%s);\n", son2->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
+                    else if(son2->symbol->type == SYMBOL_SCALAR)
+                    {
+                        if(son2->symbol->datatype != son0->symbol->datatype)
+                        {
+                            if(son0->symbol->datatype == DATATYPE_INT)
+                                fprintf(stderr, "[SEMANTIC] Expecting INTEGER datatype.\n");
+                            else if(son0->symbol->datatype == DATATYPE_FLOAT)
+                                fprintf(stderr, "[SEMANTIC] Expecting FLOAT datatype.\n");
+                            
+                            SemanticErrorFlag = 1;
+                        }
+                    }
+                }
+                else if(son2->type == AST_ADD || son2->type == AST_SUB || son2->type == AST_MUL || son2->type == AST_DIV)
+                    checkOperands(son0->symbol->datatype, son2);
+                else if(son2->type == AST_LT || son2->type == AST_GT || son2->type == AST_LE || son2->type == AST_GE
+                        || son2->type == AST_EQ || son2->type == AST_OR || son2->type == AST_AND || son2->type == AST_NOT)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Cannot attribute bool to a variable.\n");
+                        SemanticErrorFlag = 1;
+                    }
+                else if(son2->type == AST_FUNCALL)
+                {
+                    if(son2->son[0]->symbol->datatype != son0->symbol->datatype)
+                    {
+                        fprintf(stderr, "[SEMANTIC] Datatype dont match for attribution.\n");
+                        SemanticErrorFlag = 1;
+                    }
+                    checkFuncall(son2->son[0]);
+                }
+            }
+
+            break;
+
+        case AST_WHILE:
+        case AST_IF_THEN:
+
+            if(son0->type == AST_DB)
+                checkOperands(AST_DATATYPE_BOOL, son0->son[0]);
+            else
+                checkOperands(AST_DATATYPE_BOOL, son0);
+
+
+
+            if(son1)
+            {
+                if(son1->type == AST_COMMAND)
+                    checkCmds(son1);
+                else
+                    checkCmd(son1);
+            }
+                
+
+            break;
+
+        case AST_IF_THEN_ELSE:
+
+            if(son0->type == AST_DB)
+                checkOperands(AST_DATATYPE_BOOL, son0->son[0]);
+            else
+                checkOperands(AST_DATATYPE_BOOL, son0);
+
+            if(son1)
+            {
+                if(son1->type == AST_COMMAND)
+                    checkCmds(son1);
+                else
+                    checkCmd(son1);
+            }
+                
+
+            if(son2)
+            {
+                if(son2->type == AST_COMMAND)
+                    checkCmds(son2);
+                else
+                    checkCmd(son2);
+            }
+                
+                    
+            break;
+
+
+        case AST_PRINT:
+            //precisa???
+            break;
+        case AST_RETURN:
+            break;
+    }
+
+}
+
+void checkFuncall(AST* node)
+{
+
+    int found = 0;
+
+    AST* fundec;
+    AST* _fundec;
+    AST* _son1;
+    AST* son0 = node->son[0];
+    AST* son1 = node->son[1];
+
+    astFindNode(0, getAST(),  &fundec , son0->symbol->text, &found);
+
+    if(found == 1)
+    {
+        int paramCounter = 0;
+        int argumentCounter = 0;
+
+        _fundec = fundec->son[1];
+        _son1 = son1;
+
+        for(fundec = fundec->son[1]; fundec; fundec = fundec->son[1])
+            paramCounter++;
+
+        for(; son1; son1 = son1->son[1])
+            argumentCounter++;
+
+        if(argumentCounter != paramCounter)
+        {
+            fprintf(stderr, "[SEMANTIC] Number of arguments in function call '%s' invalid.\n", son0->symbol->text);
+            SemanticErrorFlag = 1;
+        }
+        else
+        {
+            int i = 0, k = 0;
+
+            fundec = _fundec;
+            son1 = _son1;
+
+            for(i = 0; i < argumentCounter; son1 = son1->son[1], i++)
+            {
+                for(k = 0; k < argumentCounter - i - 1; fundec = fundec->son[1], k++);
+
+                if(fundec->son[0]->type == AST_VEC)
+                {
+                    if(fundec->son[0]->son[0]->symbol->datatype != son1->son[0]->symbol->datatype )
+                    {
+                        fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", fundec->son[0]->son[0]->symbol->text, son1->son[0]->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
+                }
+                else
+                {
+                    if(fundec->son[0]->symbol->datatype != son1->son[0]->symbol->datatype )
+                    {
+                        fprintf(stderr, "[SEMANTIC] Argument '%s' dont match with parameter '%s'.\n", fundec->son[0]->symbol->text, son1->son[0]->symbol->text);
+                        SemanticErrorFlag = 1;
+                    }
+                }
+                
+
+                fundec = _fundec;
+            }
+        }
+        
+    }
+    
+}
+
+void checkCmds(AST* node)
+{
+
+    if(!node) return;
+
+    AST* cmd;
+
+    for(cmd = node->son[0]; cmd; cmd = cmd->son[1])
+    {
+        if(cmd->son[0])
+            checkCmd(cmd->son[0]) ;       
+
+    }
 
 
 }
 
-void checkDeclaration(AST* dec, AST* asc)
+void setArgDeclaration(AST* node)
 {
-    if(dec->symbol->datatype == DATATYPE_INT && !(asc->symbol->datatype == DATATYPE_INT || asc->symbol->datatype == DATATYPE_CHAR))
+    for(; node; node = node->son[1])
+    {
+        switch(node->son[0]->type){
+            case AST_INT_TYPE:node->son[0]->symbol->datatype = DATATYPE_INT; 
+                node->son[0]->symbol->type = SYMBOL_SCALAR; 
+            
+                break;
+            case AST_FLOAT_TYPE:node->son[0]->symbol->datatype = DATATYPE_FLOAT;  
+                node->son[0]->symbol->type = SYMBOL_SCALAR; 
+            
+                break;
+            case AST_CHAR_TYPE:node->son[0]->symbol->datatype = DATATYPE_CHAR; 
+                node->son[0]->symbol->type = SYMBOL_SCALAR;  
+            
+                break;
+            case AST_VEC: 
+                if(node->son[0]->son[0]->type)
+                {
+                    switch(node->son[0]->son[0]->type){
+                        case AST_INT_TYPE:node->son[0]->son[0]->symbol->datatype = DATATYPE_INT;  
+                            node->son[0]->son[0]->symbol->type = SYMBOL_VECTOR; 
+                        
+                            break;
+                        case AST_FLOAT_TYPE:node->son[0]->son[0]->symbol->datatype = DATATYPE_FLOAT; 
+                            node->son[0]->son[0]->symbol->type = SYMBOL_VECTOR;  
+                        
+                            break;
+                        case AST_CHAR_TYPE:node->son[0]->son[0]->symbol->datatype = DATATYPE_CHAR;  
+                            node->son[0]->son[0]->symbol->type = SYMBOL_VECTOR; 
+                        
+                            break;
+                    }
+                
+                }
+                break;
+        }
+    }
+}
+
+void checkVecDeclaration(int datatype, AST* node)
+{
+    int i;
+
+    if(!node) return;
+
+    for(i = 0; i < 2; i++)
+        checkVecDeclaration(datatype, node->son[i]);
+
+    if(node->type == AST_SYMBOL)
+        if(node->symbol->datatype != datatype)
+            fprintf(stderr, "[SEMANTIC] Wrong datatype in value (%s) for vector declaration [%d].\n", node->symbol->text, node->symbol->datatype);
+
+}
+
+void checkAlreadDeclared(AST* dec, int SYMBOL_NUMBER)
+{
+    if(dec->symbol)
+    {
+        if(dec->symbol->type != SYMBOL_IDENTIFIER)
+        {
+            fprintf(stderr, "[SEMANTIC] Symbol %s redeclared.\n", dec->symbol->text);
+            SemanticErrorFlag = 1;
+        }
+    }
+
+    //SETTING TYPE AND DATATYPE
+    dec->symbol->type = SYMBOL_NUMBER;
+
+    if(dec->type == AST_INT_TYPE || dec->type == AST_CHAR_TYPE)
+        dec->symbol->datatype = DATATYPE_INT;
+    else
+        dec->symbol->datatype = DATATYPE_FLOAT;
+}
+
+void checkValidDeclaration(AST* node)
+{
+
+    AST* dec = node->son[0];
+    AST* value = node->son[1];
+
+    if(dec->symbol->datatype == DATATYPE_INT && !(value->symbol->datatype == DATATYPE_INT || value->symbol->datatype == DATATYPE_CHAR))
     {
         fprintf(stderr, "[SEMANTIC] Symbol %s must be integer.\n", dec->symbol->text);
         SemanticErrorFlag = 1;
-
     }
-    else if(dec->symbol->datatype == DATATYPE_FLOAT && asc->symbol->datatype != DATATYPE_FLOAT)
+    else if(dec->symbol->datatype == DATATYPE_FLOAT && value->symbol->datatype != DATATYPE_FLOAT)
     {
         fprintf(stderr, "[SEMANTIC] Symbol %s must be float.\n", dec->symbol->text);
         SemanticErrorFlag = 1;
@@ -436,18 +498,16 @@ void checkOperands(int datatype, AST *node)
 {
     int i;
 
-    if(node == 0) return;
+    if(!node) return;
 
     for(i = 0; i < MAX_SONS; i++)
-    {
         checkOperands(datatype, node->son[i]);
-    }
-    
+        
     switch(node->type)
     {
         case AST_SYMBOL: 
 
-            if(node->symbol->type != SYMBOL_SCALAR && node->symbol->type != SYMBOL_FUNCTION )
+            if(node->symbol->type != SYMBOL_SCALAR && node->symbol->type != SYMBOL_FUNCTION)
             {
                 fprintf(stderr, "[SEMANTIC] Identifier %s must be scalar in arithmetic expression, %d.\n", node->symbol->text, node->symbol->datatype);
                 SemanticErrorFlag = 1;
@@ -455,25 +515,39 @@ void checkOperands(int datatype, AST *node)
 
 
             if(node->symbol->datatype == DATATYPE_INT || node->symbol->datatype == DATATYPE_CHAR)
-            {
                 node->datatype = AST_DATATYPE_INT;
-            }
             else
-            {
                 node->datatype = AST_DATATYPE_FLOAT;
-            }
-
-
             break;
+
         case AST_DB:
+            node->datatype = node->son[0]->datatype;
+
+            if(node->son[0]->symbol)
+            {
+                if(node->son[0]->symbol->datatype == DATATYPE_INT || node->son[0]->symbol->datatype == DATATYPE_CHAR)
+                    node->datatype = AST_DATATYPE_INT;
+                else
+                    node->datatype = AST_DATATYPE_FLOAT;
+            }
+            
+            break;
         case AST_FUNCALL:
             node->datatype = node->son[0]->datatype;
+            checkFuncall(node);
+
+            if(node->son[0]->symbol->datatype == DATATYPE_INT || node->son[0]->symbol->datatype == DATATYPE_CHAR)
+                node->datatype = AST_DATATYPE_INT;
+            else
+                node->datatype = AST_DATATYPE_FLOAT;
             break;
         
         case AST_ADD:
         case AST_MUL:
         case AST_DIV:
         case AST_SUB:
+
+
             if(node->son[0]->datatype == AST_DATATYPE_BOOL || node->son[1]->datatype == AST_DATATYPE_BOOL )
             {
                 fprintf(stderr, "[SEMANTIC] Cannot use boolean in arithmetic expression.\n");
@@ -490,6 +564,15 @@ void checkOperands(int datatype, AST *node)
             }
 
             break;
+        case AST_NOT:
+            if(node->son[0]->datatype != AST_DATATYPE_BOOL)
+            {
+                fprintf(stderr, "[SEMANTIC] Only boolean allowed with NOT.\n");
+                SemanticErrorFlag = 1;
+            }
+
+            node->datatype = AST_DATATYPE_BOOL;
+            break;
         case AST_ATTRIB:
             break;
         case AST_LT:
@@ -499,7 +582,6 @@ void checkOperands(int datatype, AST *node)
         case AST_EQ:
         case AST_OR:
         case AST_AND:
-
             if(node->son[0]->datatype != node->son[1]->datatype)
             {
                 fprintf(stderr, "[SEMANTIC] Cannot mix different datatypes in boolean expression.\n");
