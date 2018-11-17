@@ -45,8 +45,6 @@
 #define TAC_PARAM_LIST        29
 #define TAC_ARG_LIST        30
 
-#define TAC_BEGINFUN        31
-#define TAC_ENDFUN        32
 
 typedef struct tac_struct{
     int type;
