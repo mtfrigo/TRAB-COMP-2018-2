@@ -3,7 +3,9 @@ int x q5p;
 int ff dint c, int ccb{
 return 2;
 }int main db{
-a = ffd 5, 2 b
+a = ffd 5, a b
 ;
 x q2p = 3;
+a = x;
+print "kkk", "aa", 2 + 2, 5 + 1, x q5p;
 }

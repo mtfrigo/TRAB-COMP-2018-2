@@ -152,7 +152,7 @@ TAC* tacGenerate(AST* node)
     int i;
     TAC* result[MAX_SONS];
 
-    if(!node) return 0;
+    if(!node || node->type == AST_PARAM_LST) return 0;
 
     for(i = 0; i < MAX_SONS; i++)
         result[i] = tacGenerate(node->son[i]);
@@ -385,6 +385,7 @@ TAC* makeFuncall(AST* node, TAC* result0, TAC* result1)
     TAC* firstJoin = 0;
     TAC* paramTac = 0;
 
+
     bufferTac = tacCreate(TAC_BUFFER, result0?result0->res:0, 0, 0);
     bufferTac->res = makeTemp();
 
@@ -400,7 +401,6 @@ TAC* makeFuncall(AST* node, TAC* result0, TAC* result1)
         HASH_NODE* countNode = hashInsert(SYMBOL_SCALAR, countStr);
 
         node = node->son[1];
-        //fprintf(stderr, "func %s, param: %s; num %d \n", funcName, node->son[0]->symbol->text, count);
 
         resultParam = tacGenerate(node->son[0]);
         paramTac = tacCreate(TAC_ARG_LIST, resultParam?resultParam->res:0, result0?result0->res:0, countNode);
@@ -412,22 +412,44 @@ TAC* makeFuncall(AST* node, TAC* result0, TAC* result1)
 
 TAC* makePrint(AST* node, TAC* result0, TAC* result1)
 {
+
+    AST * symbolNode = 0;
+
     int count = 1;
     char countStr[2];
 
     TAC* printTac = 0;
     TAC* secondTac = 0;
+    TAC* expNode = 0;
 
     node = node->son[0];
-    fprintf(stderr, "param: %s; num %d \n", node->son[0]->symbol->text, count);
+    symbolNode = node->son[0];
 
+    if(symbolNode->type == AST_ADD || symbolNode->type == AST_SUB 
+    || symbolNode->type == AST_MUL || symbolNode->type == AST_DIV 
+    || symbolNode->type == AST_LT || symbolNode->type == AST_GT 
+    || symbolNode->type == AST_LE || symbolNode->type == AST_NOT 
+    || symbolNode->type == AST_EQ || symbolNode->type == AST_OR 
+    || symbolNode->type == AST_AND || symbolNode->type == AST_VEC)
+        expNode = tacGenerate(symbolNode);
 
+    //fprintf(stderr, "param: %s; num %d \n", symbolNode->symbol->text, count);
 
     sprintf(countStr, "%d", count);
     HASH_NODE* countNode = hashInsert(SYMBOL_SCALAR, countStr);
     
-    printTac = tacCreate(TAC_PRINT, node->son[0]->symbol, 0, countNode);
-    printTac = tacJoin(result0, printTac);
+    printTac = tacCreate(TAC_PRINT, (node->son[0]->type == AST_SYMBOL || node->son[0]->type == AST_STRING)  ? node->son[0]->symbol : expNode->res, 0, countNode);
+
+    if(symbolNode->type == AST_ADD || symbolNode->type == AST_SUB || symbolNode->type == AST_MUL || symbolNode->type == AST_DIV || symbolNode->type == AST_LT || symbolNode->type == AST_GT || symbolNode->type == AST_LE || symbolNode->type == AST_NOT || symbolNode->type == AST_EQ || symbolNode->type == AST_OR || symbolNode->type == AST_AND || symbolNode->type == AST_VEC)
+    {
+        expNode = tacJoin(result0, expNode);
+        printTac = tacJoin(expNode, printTac);
+    }
+    else
+    {
+        printTac = tacJoin(result0, printTac);
+    }
+
 
     while(node->son[1])
     {
@@ -437,11 +459,25 @@ TAC* makePrint(AST* node, TAC* result0, TAC* result1)
         HASH_NODE* countNode = hashInsert(SYMBOL_SCALAR, countStr);
 
         node = node->son[1];
-        fprintf(stderr, "param: %s; num %d \n", node->son[0]->symbol->text, count);
+        symbolNode = node->son[0];
 
-        secondTac = tacCreate(TAC_PRINT, node->son[0]->symbol, 0, countNode);
+        if(symbolNode->type == AST_VEC)
+            symbolNode = symbolNode->son[0];
+        else if(symbolNode->type == AST_ADD || symbolNode->type == AST_SUB || symbolNode->type == AST_MUL || symbolNode->type == AST_DIV || symbolNode->type == AST_LT || symbolNode->type == AST_GT || symbolNode->type == AST_LE || symbolNode->type == AST_NOT || symbolNode->type == AST_EQ || symbolNode->type == AST_OR || symbolNode->type == AST_AND || symbolNode->type == AST_VEC)
+            expNode = tacGenerate(symbolNode);
 
-        secondTac = tacJoin(printTac, secondTac);
+        secondTac = tacCreate(TAC_PRINT, (node->son[0]->type == AST_SYMBOL || node->son[0]->type == AST_STRING) ? node->son[0]->symbol : expNode->res, 0, countNode);
+        //fprintf(stderr, "param: %s; num %d \n", symbolNode->symbol->text, count);
+
+        if(symbolNode->type == AST_ADD || symbolNode->type == AST_SUB || symbolNode->type == AST_MUL || symbolNode->type == AST_DIV || symbolNode->type == AST_LT || symbolNode->type == AST_GT || symbolNode->type == AST_LE || symbolNode->type == AST_NOT || symbolNode->type == AST_EQ || symbolNode->type == AST_OR || symbolNode->type == AST_AND || symbolNode->type == AST_VEC){
+            expNode = tacJoin(expNode, secondTac);
+            secondTac = tacJoin(expNode, printTac);
+        }
+        else
+        {
+            secondTac = tacJoin(secondTac, printTac);
+        }
+
     }
 
     return tacJoin(secondTac, result1);

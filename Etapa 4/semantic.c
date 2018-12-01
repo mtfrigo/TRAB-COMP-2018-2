@@ -10,6 +10,7 @@ AST* getAST();
 
 void setDeclaration(AST *root)
 {
+
     AST *node;
     AST *dec;
 
@@ -320,7 +321,10 @@ void checkFuncall(AST* node)
     AST* son0 = node->son[0];
     AST* son1 = node->son[1];
 
+
+
     astFindNode(0, getAST(),  &fundec , son0->symbol->text, &found);
+
 
     if(found == 1)
     {
