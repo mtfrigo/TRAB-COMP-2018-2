@@ -21,10 +21,6 @@
 
 #define DATATYPE_TEMP 4
 
-HASH_NODE*Table[HASH_SIZE];
-int tempFlag = 0;
-
-
 typedef struct hash_node
 {
     int type;
@@ -33,6 +29,7 @@ typedef struct hash_node
     struct hash_node *next;
 
 } HASH_NODE;
+HASH_NODE*Table[HASH_SIZE];
 
 void hashInit (void);
 int hashAddress(char *text);

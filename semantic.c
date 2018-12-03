@@ -1,4 +1,3 @@
-
 #include "semantic.h"
 #include "y.tab.h"
 
@@ -16,18 +15,16 @@ void listFuncDeclInsert(LIST_FUNC_DECL** listFuncDecl, AST* node)
 		fprintf(stderr, "Erro FUNC_DECL_LIST_CREATE: sem memória!\n");
 		exit(1);
  	}
-	//printf("entrou aqui! datatype: %d\n", node->dataType);
+
 	newNode->ast_node = node;
 	newNode->next = 0;
 
 	if (*listFuncDecl == 0)
 	{
-		//printf("insert1\n");
 	 	*listFuncDecl = newNode;
 	}
 	else
 	{
-		//printf("insert2\n");
 	  	LIST_FUNC_DECL* temp = *listFuncDecl;
 	  	
 	  	while (temp->next != 0)
@@ -518,6 +515,8 @@ void checkValidDeclaration(AST* node)
         fprintf(stderr, "[SEMANTIC] Symbol %s must be float.\n", dec->symbol->text);
         SemanticErrorFlag = 1;
     }
+
+
 
     //nao sei se ta certo
     if(node->type == AST_FUNC_DEC)

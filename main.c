@@ -42,13 +42,13 @@ int main(int argc, char** argv)
 		exit(2);
 	}
 
-	if ((outputFile = fopen(argv[2], "w")) == 0)
+	if ((outputFile = fopen(argv[2], "w+")) == 0)
 	{
-		fprintf(stderr, "Cannot open file %s\n", argv[1]);
+		fprintf(stderr, "Cannot open file %s\n", argv[2]);
 
 		exit(2);
 	}
-	outuput2 = stdout;
+	output2 = stdout;
 
 	initMe();
 
@@ -65,6 +65,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "\nSource code OK!\n");
 
 		checkUndeclared();
+		fprintf(stderr, "OK UNDECLARED\n");
 		setDeclaration(getAST());
 
 		if(SemanticErrorFlag == 1)

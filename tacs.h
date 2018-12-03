@@ -32,18 +32,18 @@
 #define TAC_PRINT 		20
 #define TAC_READ 		21
 
-#define TAC_LABEL       22
+#define TAC_LABEL       	22
 
-#define TAC_MOVE        23
+#define TAC_MOVE        	23
 
-#define TAC_WHILE        24
-#define TAC_VEC_WR        25
-#define TAC_VEC_RD        26
-#define TAC_BUFFER        27
-#define TAC_FUNCALL        28
+#define TAC_WHILE        	24
+#define TAC_VEC_WR        	25
+#define TAC_VEC_RD        	26
+#define TAC_BUFFER        	27
+#define TAC_FUNCALL        	28
 
-#define TAC_PARAM_LIST        29
-#define TAC_ARG_LIST        30
+#define TAC_PARAM_LIST        	29
+#define TAC_ARG_LIST        	30
 
 
 typedef struct tac_struct{

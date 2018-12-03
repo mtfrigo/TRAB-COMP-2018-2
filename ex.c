@@ -1,7 +1,13 @@
 #include<stdio.h>
+#include<stdbool.h>
+
 
 int main()
 {
-int a;
-printf("%d\n", a);
+	int a = 5;
+	int b = 5;
+	
+	if (a < b){
+		a = 3;
+	}
 }

@@ -7,7 +7,8 @@
 #include "y.tab.h"
 
 void astFind(int level, AST* node, char* text);
-AST* getAST(); 
+AST* getAST();
+int temp_Flag = 0; 
 
 
 void hashInit (void){
@@ -53,10 +54,10 @@ HASH_NODE* hashInsert(int type, char *text){
         newnode->datatype = DATATYPE_CHAR;
     }
 
-    if (tempFlag == 1)
+    if (temp_Flag == 1)
     { 
-	newnode->datatypr = DATATYPE_TEMP;
-	tempFlag = 0;
+	newnode->datatype = DATATYPE_TEMP;
+	temp_Flag = 0;
     }
 
     //fprintf(stderr, "[HASH] Text: %s; Type: %d\n", text, type);
@@ -135,7 +136,7 @@ void hashCheckUndeclared(void)
 
 HASH_NODE* makeTemp()
 {
-    tempFlag = 1;
+    temp_Flag = 1;
     static int serial = 0;
     static char name[100];
     sprintf(name, "GerofrigoliciousTemp%d", serial++);

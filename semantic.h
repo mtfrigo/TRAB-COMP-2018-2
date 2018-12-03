@@ -9,7 +9,7 @@
 
 typedef struct list_func_declaration
 {
-	AST_NODE* ast_node;
+	AST* ast_node;
  	struct list_func_declaration* next;
 } LIST_FUNC_DECL;
 

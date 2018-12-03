@@ -1,3 +1,4 @@
 make clean
 make
-./etapa5 input.txt output.txt
+./etapa6 input.txt output.s
+gcc output.s -o assembler.bin  
