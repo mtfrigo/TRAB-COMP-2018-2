@@ -3,7 +3,6 @@
 #include "ast.h"
 #include "semantic.h"
 #include "tacs.h"
-#include "assembly_gen.h"
 
 int yyparse(void);
 int yylex(void);
@@ -25,7 +24,7 @@ extern int lineNumber;
 
 int main(int argc, char** argv)
 {
-	FILE *outputFile, *output2;
+	FILE *outputFile;
 	int result;
 
 	if(argc < 3)
@@ -48,7 +47,6 @@ int main(int argc, char** argv)
 
 		exit(2);
 	}
-	outuput2 = stdout;
 
 	initMe();
 
@@ -60,12 +58,14 @@ int main(int argc, char** argv)
 		hashPrint();
 		fprintf(stderr, "\nSyntactical tree for the input file: \n");
 		astPrint(0, getAST());
-		astToFile(getAST(), output2);
+		astToFile(getAST(), outputFile);
 
 		fprintf(stderr, "\nSource code OK!\n");
 
 		checkUndeclared();
 		setDeclaration(getAST());
+
+		tacPrintForward(tacReverse(tacGenerate(getAST())));
 
 		if(SemanticErrorFlag == 1)
 		{
@@ -74,12 +74,6 @@ int main(int argc, char** argv)
 		}
 
 		fprintf(stderr, "\nNo semantic errors!\n");
-
-		TAC *tac_reverse = tacReverse(tacGenerate(getAST()));
-		tacPrintForward(tac_reverse);
-
-		fprintf(stderr, "\nGerando assembly...\n");
-		gen_assembly(tac_reverse, outputFile);
 
 
 		exit(0);
@@ -90,6 +84,5 @@ int main(int argc, char** argv)
 
 		exit(3);
 	}
-	
 }
 

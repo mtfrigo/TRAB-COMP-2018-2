@@ -19,11 +19,6 @@
 #define DATATYPE_CHAR 2
 #define DATATYPE_FLOAT 3
 
-#define DATATYPE_TEMP 4
-
-HASH_NODE*Table[HASH_SIZE];
-int tempFlag = 0;
-
 
 typedef struct hash_node
 {

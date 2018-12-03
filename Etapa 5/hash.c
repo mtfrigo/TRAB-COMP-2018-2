@@ -6,6 +6,8 @@
 #include "ast.h"
 #include "y.tab.h"
 
+HASH_NODE*Table[HASH_SIZE];
+
 void astFind(int level, AST* node, char* text);
 AST* getAST(); 
 
@@ -51,12 +53,6 @@ HASH_NODE* hashInsert(int type, char *text){
     else if(type == LIT_CHAR)
     {
         newnode->datatype = DATATYPE_CHAR;
-    }
-
-    if (tempFlag == 1)
-    { 
-	newnode->datatypr = DATATYPE_TEMP;
-	tempFlag = 0;
     }
 
     //fprintf(stderr, "[HASH] Text: %s; Type: %d\n", text, type);
@@ -135,7 +131,6 @@ void hashCheckUndeclared(void)
 
 HASH_NODE* makeTemp()
 {
-    tempFlag = 1;
     static int serial = 0;
     static char name[100];
     sprintf(name, "GerofrigoliciousTemp%d", serial++);
