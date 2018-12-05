@@ -19,6 +19,7 @@
 #define DATATYPE_CHAR 2
 #define DATATYPE_FLOAT 3
 
+#define DATATYPE_TEMP 4
 
 typedef struct hash_node
 {
@@ -28,6 +29,7 @@ typedef struct hash_node
     struct hash_node *next;
 
 } HASH_NODE;
+HASH_NODE*Table[HASH_SIZE];
 
 void hashInit (void);
 int hashAddress(char *text);

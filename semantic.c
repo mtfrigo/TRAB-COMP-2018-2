@@ -1,12 +1,40 @@
-
-
 #include "semantic.h"
-
 #include "y.tab.h"
 
 int SemanticErrorFlag = 0;
+int init = 0;
 
 AST* getAST();
+
+void listFuncDeclInsert(LIST_FUNC_DECL** listFuncDecl, AST* node)
+{
+	LIST_FUNC_DECL *newNode;
+	
+	if (!(newNode = (LIST_FUNC_DECL*) calloc(1, sizeof(LIST_FUNC_DECL))))
+	{
+		fprintf(stderr, "Erro FUNC_DECL_LIST_CREATE: sem memória!\n");
+		exit(1);
+ 	}
+
+	newNode->ast_node = node;
+	newNode->next = 0;
+
+	if (*listFuncDecl == 0)
+	{
+	 	*listFuncDecl = newNode;
+	}
+	else
+	{
+	  	LIST_FUNC_DECL* temp = *listFuncDecl;
+	  	
+	  	while (temp->next != 0)
+	  	{
+	   		temp = temp->next;
+	 	}
+	  
+	  	temp->next = newNode;
+	}
+}
 
 void setDeclaration(AST *root)
 {
@@ -487,10 +515,21 @@ void checkValidDeclaration(AST* node)
         fprintf(stderr, "[SEMANTIC] Symbol %s must be float.\n", dec->symbol->text);
         SemanticErrorFlag = 1;
     }
+
+
+
+    //nao sei se ta certo
+    if(node->type == AST_FUNC_DEC)
+	listFuncDeclInsert(&listFuncDecl, node);
 }
 
 void checkUndeclared()
 {
+    if(!init)
+    {
+	listFuncDecl = 0;
+	init = 1;
+    }
     hashCheckUndeclared();
 }
 

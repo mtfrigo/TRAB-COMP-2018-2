@@ -3,6 +3,7 @@
 #include "ast.h"
 #include "semantic.h"
 #include "tacs.h"
+#include "assembly_gen.h"
 
 int yyparse(void);
 int yylex(void);
@@ -24,7 +25,7 @@ extern int lineNumber;
 
 int main(int argc, char** argv)
 {
-	FILE *outputFile;
+	FILE *outputFile, *output2;
 	int result;
 
 	if(argc < 3)
@@ -41,12 +42,13 @@ int main(int argc, char** argv)
 		exit(2);
 	}
 
-	if ((outputFile = fopen(argv[2], "w")) == 0)
+	if ((outputFile = fopen(argv[2], "w+")) == 0)
 	{
-		fprintf(stderr, "Cannot open file %s\n", argv[1]);
+		fprintf(stderr, "Cannot open file %s\n", argv[2]);
 
 		exit(2);
 	}
+	output2 = stdout;
 
 	initMe();
 
@@ -58,14 +60,13 @@ int main(int argc, char** argv)
 		hashPrint();
 		fprintf(stderr, "\nSyntactical tree for the input file: \n");
 		astPrint(0, getAST());
-		astToFile(getAST(), outputFile);
+		astToFile(getAST(), output2);
 
 		fprintf(stderr, "\nSource code OK!\n");
 
 		checkUndeclared();
+		fprintf(stderr, "OK UNDECLARED\n");
 		setDeclaration(getAST());
-
-		tacPrintForward(tacReverse(tacGenerate(getAST())));
 
 		if(SemanticErrorFlag == 1)
 		{
@@ -74,6 +75,12 @@ int main(int argc, char** argv)
 		}
 
 		fprintf(stderr, "\nNo semantic errors!\n");
+
+		TAC *tac_reverse = tacReverse(tacGenerate(getAST()));
+		tacPrintForward(tac_reverse);
+
+		fprintf(stderr, "\nGerando assembly...\n");
+		gen_assembly(tac_reverse, outputFile);
 
 
 		exit(0);
@@ -84,5 +91,6 @@ int main(int argc, char** argv)
 
 		exit(3);
 	}
+	
 }
 
