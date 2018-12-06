@@ -1,18 +1,30 @@
-int a = 0;
-int xq5p;
+char s = 's';
+char ssq2p;
+char sssq2p: 'c' 'g';
 
-int ffdint c, int ccb{
-  return 2;
-}
+int x = 2;
+int xxq2p;
+int xxxq2p: 2 3;
+
+int g = 3;
+char gg = 'c';
 
 int main db {
 
-  a = ffd a , 5b;
-  xq2p = 3;
+    s = 'c';
+    ssq1p = 'h';
+    ssq2p = 'k';
 
-  a = x;
+    s = gg;
+    ssq1p = gg;
+    ssq2p = gg;
 
-  print "kkk", "aa", 2+2, 5+1, xq5p ;
+    x = 3;
+    xxq1p = 5;
+    xxxq5p = 7;
+
+    x = g;
+    xxq1p = g;
+    xxxq5p = g;
 
 }
-

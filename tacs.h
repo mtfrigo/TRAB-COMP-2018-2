@@ -51,11 +51,12 @@ typedef struct tac_struct{
     HASH_NODE* res;
     HASH_NODE* op1;
     HASH_NODE* op2;
+    AST* node;
     struct tac_struct * prev;
     struct tac_struct * next;
 } TAC;
 
-TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2);
+TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2, AST* node);
 void tacPrintSingle(TAC* tac);
 void tacPrintBackwards(TAC* tac);
 void tacPrintForward(TAC* tac);

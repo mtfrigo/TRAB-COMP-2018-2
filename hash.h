@@ -25,6 +25,7 @@ typedef struct hash_node
 {
     int type;
     int datatype;
+    int isLiteral;
     char *text;
     struct hash_node *next;
 

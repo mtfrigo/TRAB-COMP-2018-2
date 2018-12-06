@@ -6,6 +6,8 @@
         "token.h": "c",
         "y.tab.h": "c",
         "type_traits": "cpp",
-        "semantic.h": "c"
+        "semantic.h": "c",
+        "stdbool.h": "c",
+        "frigenco.h": "c"
     }
 }

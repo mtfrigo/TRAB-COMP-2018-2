@@ -40,24 +40,29 @@ HASH_NODE* hashInsert(int type, char *text){
     newnode = (HASH_NODE*) calloc(1, sizeof(HASH_NODE));
     newnode->type = type;
 
+    newnode->isLiteral = 0;
+
 
     if(type == LIT_INTEGER)
     {
         newnode->datatype = DATATYPE_INT;
+        newnode->isLiteral = 1;
     }
     else if(type == LIT_FLOAT)
     {
         newnode->datatype = DATATYPE_FLOAT;
+        newnode->isLiteral = 1;
     }
     else if(type == LIT_CHAR)
     {
         newnode->datatype = DATATYPE_CHAR;
+        newnode->isLiteral = 1;
     }
 
     if (temp_Flag == 1)
     { 
-	newnode->datatype = DATATYPE_TEMP;
-	temp_Flag = 0;
+        newnode->datatype = DATATYPE_TEMP;
+        temp_Flag = 0;
     }
 
     //fprintf(stderr, "[HASH] Text: %s; Type: %d\n", text, type);

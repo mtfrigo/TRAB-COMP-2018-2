@@ -1,0 +1,31 @@
+#### 
+cfisomething helps traverse the call 
+stack when an instruction causes an exception,
+so the exception handler can be found and correctly executed
+
+LFsomething are just regular labels that are problably referenced
+by that extra expection-related data
+####
+
+## declaracao global int
+
+
+
+
+
+## TAC_ATTR
+	movl	$2, -4(%rbp)
+
+## tac_begin_fun
+    .globl	main
+main:
+	.cfi_startproc
+	pushq	%rbp
+	movq	%rsp, %rbp
+
+
+## tac_end_fun
+    movl	$0, %eax
+	popq	%rbp
+	ret
+	.cfi_endproc

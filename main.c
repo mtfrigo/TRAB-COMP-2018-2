@@ -3,7 +3,7 @@
 #include "ast.h"
 #include "semantic.h"
 #include "tacs.h"
-#include "assembly_gen.h"
+#include "frigenco.h"
 
 int yyparse(void);
 int yylex(void);
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
 		exit(2);
 	}
-	output2 = stdout;
+	//output2 = stdout;
 
 	initMe();
 
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 		hashPrint();
 		fprintf(stderr, "\nSyntactical tree for the input file: \n");
 		astPrint(0, getAST());
-		astToFile(getAST(), output2);
+		//astToFile(getAST(), output2);
 
 		fprintf(stderr, "\nSource code OK!\n");
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 		tacPrintForward(tac_reverse);
 
 		fprintf(stderr, "\nGerando assembly...\n");
-		gen_assembly(tac_reverse, outputFile);
+		gen_assembly(tac_reverse, outputFile, getAST());
 
 
 		exit(0);

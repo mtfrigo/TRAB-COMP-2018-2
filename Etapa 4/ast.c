@@ -313,7 +313,7 @@ void astToFile(AST *node, FILE *f){
             		level--;
             		for (i = 0; i < level; i++) 
 				fprintf(f, "    ");
-			fprintf(f, "}");
+			fprintf(f, "}\n");
 
 			break;
 		}

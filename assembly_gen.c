@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 char reg_temp[32] = "%edx";
 int genco_initialized = 0;
@@ -46,7 +45,9 @@ void initParamVar(FILE *output) {
     LIST_FUNC_DECL *func;
     AST *lstArg;
     AST *arg;
-    for(func = listFuncDecl; func; func = func->next) {
+
+    for(func = listFuncDecl; func; func = func->next) 
+	{
         //printf("teste2\n");
         lstArg = func->ast_node->son[1];
 

@@ -1,0 +1,2 @@
+gcc ex.s
+./a.out
