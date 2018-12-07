@@ -105,6 +105,7 @@ void gen_var_attr(FILE* output, TAC *tac, AST* root)
 			fprintf(output, "\tmovb\t$%d, %s(%%rip) \n", tac->op2->text[1], tac->res->text);
 		}
 		else{
+
 			fprintf(output, "\tmovzbl\t$%s(%%rip), %%%s \n", tac->op2->text, RETURN_REGISTER);
 			fprintf(output, "\tmovl\t%%%s, %s(%%rip) \n", "al",  tac->res->text);
 		}
@@ -117,7 +118,7 @@ void gen_var_attr(FILE* output, TAC *tac, AST* root)
 			fprintf(output, "\tmovl\t$%s, %s(%%rip) \n", tac->op2->text, tac->res->text);
 		}
 		else{
-			fprintf(output, "\tmovl\t$%s(%%rip), %%%s \n", tac->op2->text, RETURN_REGISTER);
+			fprintf(output, "\tmovl\t%s(%%rip), %%%s \n", tac->op2->text, RETURN_REGISTER);
 			fprintf(output, "\tmovl\t%%%s, %s(%%rip) \n", RETURN_REGISTER, tac->res->text);
 		}
 	}
@@ -357,6 +358,27 @@ void get_strings(FILE* output, AST *root)
 	fprintf(output, "\n");
 }
 
+void get_temps(FILE* output, AST *root)
+{
+	HASH_NODE *hnode;
+
+    int i;
+
+    for (i = 0; i < HASH_SIZE; ++i){
+        for (hnode = Table[i]; hnode; hnode = hnode->next){
+			if(hnode->type == SYMBOL_TEMP)
+			{
+				fprintf(output, "%s:\n", hnode->text);
+				fprintf(output, "\t.long\t0");
+				fprintf(output, "\n");
+			}
+        }
+    }
+
+	fprintf(output, "\n");
+
+}
+
 void get_print_parameters(FILE* output, AST *node, AST *root, int *count)
 {
 	int i = 0;
@@ -461,6 +483,50 @@ void gen_print(FILE *output, TAC *tac, AST* root)
 
 }
 
+void gen_numeric_expr(FILE *output, TAC *tac)
+{
+	char op[8];
+    
+	switch(tac->type)
+	{
+        case TAC_ADD:
+            strcpy(op, "addl");
+            break;
+        case TAC_SUB:
+            strcpy(op, "subl");
+            break;
+        case TAC_MUL:
+            strcpy(op, "imull");
+            break;
+		case TAC_DIV:
+            strcpy(op, "idivl");
+            break;
+        default:
+            return;
+            break;
+    }
+
+    if(tac->op1->type == TAC_LABEL) {
+        fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
+    }
+    else{
+        fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op1->text);
+    }
+
+    if(tac->op2->type == TAC_LABEL) {
+        fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
+    }
+    else{
+        fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
+    }
+
+    fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
+    fprintf(output, "\tmovl\t%%eax, %s(%%rip)\n", tac->res->text);
+
+	fprintf(output, "\n");
+
+}
+
 void gen_assembly(TAC*node, FILE* output, AST *root){
 
     fprintf(stderr, "INITIALIZED GEN\n");
@@ -468,10 +534,13 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 	//WRITE GLOBAL VARIABLES ASSEMBLY
 	fprintf(output, "\t.text\n");
 	get_declarations(output, root);
+	//WRITE ALL TEMP VARIABLES
+	get_temps(output, root);
 	//WRITE ALL STRINGS IN HASH
 	int count = 0;
 	fprintf(output, "\t.section\t.rodata\n");
 	get_print_parameters(output, root, root, &count);
+	
 
 	fprintf(output, "\t.text\n");
 
@@ -487,16 +556,20 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 			case TAC_SYMBOL: printTacInfo("TAC_SYMBOL", tac) ; 
 				break;
 
-			case TAC_ADD: printTacInfo("TAC_ADD", tac) ; 
+			case TAC_ADD: printTacInfo("TAC_ADD", tac);
+						  gen_numeric_expr(output, tac); 
 				break;
 
 			case TAC_SUB: printTacInfo("TAC_SUB", tac); 
+						  gen_numeric_expr(output, tac); 
 				break;
 
-			case TAC_DIV: printTacInfo("TAC_DIV", tac); ; 
+			case TAC_DIV: printTacInfo("TAC_DIV", tac);
+						  gen_numeric_expr(output, tac); 
 				break;
 
 			case TAC_MUL: printTacInfo("TAC_MUL", tac); 
+						  gen_numeric_expr(output, tac); 
 				break;
 
 			case TAC_LT: printTacInfo("TAC_LT", tac); 
@@ -568,15 +641,6 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 				break;
 
 			case TAC_FUNCALL: printTacInfo("TAC_FUNCALL", tac); 
-				break;
-
-			case TAC_BUFFER: printTacInfo("TAC_BUFFER", tac); 
-				break;
-
-			case TAC_ARG_LIST: printTacInfo("TAC_ARG_LIST", tac); 
-				break;
-
-			case TAC_PARAM_LIST: printTacInfo("TAC_PARAM_LIST", tac); 
 				break;
 
 			default: fprintf(stderr, "TAC_UNKNOWN"); 

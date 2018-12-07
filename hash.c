@@ -146,7 +146,7 @@ HASH_NODE* makeTemp()
     static int serial = 0;
     static char name[100];
     sprintf(name, "GerofrigoliciousTemp%d", serial++);
-    return hashInsert(SYMBOL_SCALAR, name);
+    return hashInsert(SYMBOL_TEMP, name);
 }
 
 HASH_NODE* makeLabel()

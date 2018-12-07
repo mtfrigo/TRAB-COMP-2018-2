@@ -1,6 +1,7 @@
 int x = 3;
-char c = 'c';
 
 int main db {
-    print x, c, "asdasd";
+
+    x = 50 + 5;
+    print x;
 }

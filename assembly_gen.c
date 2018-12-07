@@ -224,8 +224,11 @@ void gencoLongLiteralDeclaration(FILE* output, HASH_NODE *hashNode, TAC* tac)
 
 
 void gencoNumericOp(TAC* tac, FILE* output)  {
+
     char op[8];
-    switch(tac->type){
+    
+	switch(tac->type)
+	{
         case TAC_ADD:
             strcpy(op, "addl");
             break;
@@ -235,7 +238,7 @@ void gencoNumericOp(TAC* tac, FILE* output)  {
         case TAC_MUL:
             strcpy(op, "imull");
             break;
-	case TAC_DIV:
+		case TAC_DIV:
             strcpy(op, "idivl");
             break;
         default:
@@ -260,9 +263,6 @@ void gencoNumericOp(TAC* tac, FILE* output)  {
     fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
     fprintf(output, "\tmovl\t%%eax, %s\n", tac->res->text);
 }
-
-
-
 
 
 void gen_assembly(TAC*node, FILE* output){

@@ -14,6 +14,7 @@
 #define SYMBOL_VECTOR 4
 #define SYMBOL_FUNCTION 5
 #define SYMBOL_LABEL 6
+#define SYMBOL_TEMP 7
 
 #define DATATYPE_INT 1
 #define DATATYPE_CHAR 2
