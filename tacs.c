@@ -449,7 +449,7 @@ TAC* makePrint(AST* node, TAC* result0, TAC* result1)
         printTac = tacJoin(result0, printTac);
     }
 
-
+    if(node->son[1])
     while(node->son[1])
     {
         count++;
@@ -478,6 +478,8 @@ TAC* makePrint(AST* node, TAC* result0, TAC* result1)
         }
 
     }
+    else
+        return tacJoin(printTac, result1);
 
     return tacJoin(secondTac, result1);
 }

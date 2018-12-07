@@ -41,6 +41,7 @@ HASH_NODE* hashInsert(int type, char *text){
     newnode->type = type;
 
     newnode->isLiteral = 0;
+    newnode->assemblyLabel = 0;
 
 
     if(type == LIT_INTEGER)

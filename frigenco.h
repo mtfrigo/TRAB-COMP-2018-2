@@ -9,4 +9,5 @@ void printTacInfo(char *type, TAC* tac);
 void gen_beginfun(FILE* output, TAC *tac);
 void gen_var_attr(FILE* output, TAC *tac, AST* node);
 void gen_vec_attr(FILE* output, TAC *tac, AST* node);
+void get_print_parameters(FILE* output, AST *node, AST *root, int *count);
 AST* findDecNode(char *text, AST* root);
