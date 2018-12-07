@@ -129,7 +129,7 @@ argument
 	;
 
 literal
-	: LIT_INTEGER 							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
+	: LIT_INTEGER 						{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
 	| LIT_FLOAT							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
 	| LIT_CHAR							{ $$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0); }
 	;

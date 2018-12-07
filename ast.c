@@ -3,7 +3,6 @@
 
 AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST *son3){
 
-
 	AST* newnode;
 	newnode = (AST*) calloc(1,sizeof(AST));
 	newnode->type = type;

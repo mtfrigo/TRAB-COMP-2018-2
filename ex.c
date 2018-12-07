@@ -1,7 +1,8 @@
 #include <stdio.h>
-int x = 3;
+int x = 2;
+int xx = 3;
 
 int main () {
-
-    x = 3 + 3;
+    if(x < xx)
+        x = 0;
 }

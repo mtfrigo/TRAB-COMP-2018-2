@@ -389,16 +389,12 @@ void gen_assembly(TAC*node, FILE* output){
 					fprintf(output, "%s:\n", tac->res->text);
 					break;
 
-
-
-
 				/*case TAC_VAR:
 					gencoVarDeclaration(output, tac);
 					break;
 				case TAC_ARRAY_DECLARADO:
 						gencoArrayDeclaration(output, tac);
 						break;
-			
 
 		        			fprintf(output, "\t.globl\t%s\n", tac->res->text);
 					fprintf(output, "%s:\n"
@@ -439,11 +435,6 @@ void gen_assembly(TAC*node, FILE* output){
 
 					break;
 
-
-			
-
-			
-
 				case TAC_INCREMENT:
 					fprintf(output, "\tmovl\t%s(%%rip), %%eax\n"
 							"\taddl\t$1, %%eax\n"
@@ -463,9 +454,6 @@ void gen_assembly(TAC*node, FILE* output){
 					}
 					fprintf(output, "\tsetle\t%%al\n");
 					break;*/
-
-			
-
 			
 			}
 		}

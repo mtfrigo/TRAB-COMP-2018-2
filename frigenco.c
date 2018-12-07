@@ -527,6 +527,27 @@ void gen_numeric_expr(FILE *output, TAC *tac)
 
 }
 
+void gen_vec_rd(FILE *output, TAC *tac, AST* root)
+{
+	AST *node = findDecNode(tac->node->son[0]->symbol->text, root);
+
+	int byte_size;
+
+	if(node->son[0]->type == AST_CHAR_TYPE)
+		byte_size = 1;
+	else
+		byte_size = 4;
+
+	fprintf(output, "\tmovl\t%d+%s(%%rip), %%eax\n", byte_size * atoi(tac->op2->text), tac->op1->text);
+	fprintf(output, "\tmovl\t%%eax\t, %s(%%rip)\n", tac->res->text);
+	fprintf(output, "\n");
+}
+
+void gen_bool(FILE *output, TAC* tac)
+{
+
+}
+
 void gen_assembly(TAC*node, FILE* output, AST *root){
 
     fprintf(stderr, "INITIALIZED GEN\n");
@@ -585,6 +606,7 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 				break;
 
 			case TAC_EQ: printTacInfo("TAC_EQ", tac); 
+						 gen_bool(output, tac);
 				break;
 
 			case TAC_OR: printTacInfo("TAC_OR", tac); 
@@ -601,6 +623,34 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 							 gen_endfun(output, tac); 
 				break;
 
+			case TAC_PRINT: printTacInfo("TAC_PRINT", tac);
+							gen_print(output, tac, root); 
+				break;
+
+			case TAC_MOVE: printTacInfo("TAC_MOVE", tac); 
+						   gen_var_attr(output, tac, root);
+				break;
+
+			case TAC_VEC_WR: printTacInfo("TAC_VEC_WR", tac); 
+							 gen_vec_attr(output, tac, root);
+				break;
+
+			case TAC_VEC_RD: printTacInfo("TAC_VEC_RD", tac); 
+							 gen_vec_rd(output, tac, root);
+				break;
+
+			case TAC_WHILE: printTacInfo("TAC_WHILE", tac); 
+				break;
+
+			case TAC_READ: printTacInfo("TAC_READ", tac); 
+				break;
+
+			case TAC_LABEL: printTacInfo("TAC_LABEL", tac); 
+				break;
+
+			case TAC_FUNCALL: printTacInfo("TAC_FUNCALL", tac); 
+				break;
+
 			case TAC_RETURN: printTacInfo("TAC_RETURN", tac); 
 				break;
 
@@ -614,33 +664,6 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 				break;
 
 			case TAC_ARG: printTacInfo("TAC_ARG", tac); 
-				break;
-
-			case TAC_PRINT: printTacInfo("TAC_PRINT", tac);
-							gen_print(output, tac, root); 
-				break;
-
-			case TAC_READ: printTacInfo("TAC_READ", tac); 
-				break;
-
-			case TAC_LABEL: printTacInfo("TAC_LABEL", tac); 
-				break;
-
-			case TAC_MOVE: printTacInfo("TAC_MOVE", tac); 
-						   gen_var_attr(output, tac, root);
-				break;
-
-			case TAC_WHILE: printTacInfo("TAC_WHILE", tac); 
-				break;
-
-			case TAC_VEC_WR: printTacInfo("TAC_VEC_WR", tac); 
-							 gen_vec_attr(output, tac, root);
-				break;
-
-			case TAC_VEC_RD: printTacInfo("TAC_VEC_RD", tac); 
-				break;
-
-			case TAC_FUNCALL: printTacInfo("TAC_FUNCALL", tac); 
 				break;
 
 			default: fprintf(stderr, "TAC_UNKNOWN"); 

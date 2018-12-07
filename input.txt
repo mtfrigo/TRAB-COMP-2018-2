@@ -1,7 +1,8 @@
 int x = 3;
+int xx = 2;
 
 int main db {
-
-    x = 50 + 5;
-    print x;
+    ifd x > xx b then {
+        x = 0;
+    };
 }
