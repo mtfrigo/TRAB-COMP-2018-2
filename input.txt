@@ -1,8 +1,13 @@
-int x = 3;
-int xx = 2;
+int x = 5;
+int xxq2p: 1 5;
 
 int main db {
-    ifd x > xx b then {
-        x = 0;
+
+    x = xxq1p;
+
+    while d x > 2 b {
+        x = x - 1;
     };
+
+    print x;
 }

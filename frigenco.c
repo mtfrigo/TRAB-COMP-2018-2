@@ -403,15 +403,15 @@ void get_print_parameters(FILE* output, AST *node, AST *root, int *count)
 
 				if(dec->son[0]->type == AST_INT_TYPE)
 				{
-					fprintf(output, "\t.string\t\"%%d\\n\"\n", pnode->son[0]->symbol->text);
+					fprintf(output, "\t.string\t\"%%d\\n\"\n");
 				}
 				else if(dec->son[0]->type == AST_FLOAT_TYPE)
 				{
-					fprintf(output, "\t.string\t\"%%f\\n\"\n", pnode->son[0]->symbol->text);
+					fprintf(output, "\t.string\t\"%%f\\n\"\n");
 				}
 				else if(dec->son[0]->type == AST_CHAR_TYPE)
 				{
-					fprintf(output, "\t.string\t\"%%c\\n\"\n", pnode->son[0]->symbol->text);
+					fprintf(output, "\t.string\t\"%%c\\n\"\n");
 				}
 			}
 			else
@@ -506,14 +506,14 @@ void gen_numeric_expr(FILE *output, TAC *tac)
             break;
     }
 
-    if(tac->op1->type == TAC_LABEL) {
+    if(!tac->op1->isLiteral) {
         fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op1->text);
     }
     else{
         fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op1->text);
     }
 
-    if(tac->op2->type == TAC_LABEL) {
+    if(!tac->op2->isLiteral) {
         fprintf(output, "\tmovl\t%s(%%rip), %%ebx\n", tac->op2->text);
     }
     else{
@@ -545,7 +545,62 @@ void gen_vec_rd(FILE *output, TAC *tac, AST* root)
 
 void gen_bool(FILE *output, TAC* tac)
 {
+	char op[8];
 
+	if(tac->op1->isLiteral) {
+        fprintf(output, "\tmovl\t$%s, %%edx\n", tac->op1->text);
+    }
+    else{
+        fprintf(output, "\tmovl\t%s(%%rip), %%edx\n", tac->op1->text);
+    }
+
+    if(tac->op2->isLiteral) {
+        fprintf(output, "\tmovl\t$%s, %%eax\n", tac->op2->text);
+    }
+    else{
+        fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->op2->text);
+    }
+
+	fprintf(output, "\tcmpl\t%%eax, %%edx\n", tac->op2->text);
+
+	switch(tac->type)
+	{
+        case TAC_EQ:
+            strcpy(op, "jne");
+            break;
+        case TAC_GT:
+            strcpy(op, "jle");
+            break;
+        case TAC_LT:
+            strcpy(op, "jge");
+        case TAC_GE:
+            strcpy(op, "jl");
+            break;
+        case TAC_LE:
+            strcpy(op, "jg");
+            break;
+        default:
+            return;
+            break;
+    }
+
+	fprintf(output, "\t%s", op);
+
+}
+
+void gen_if(FILE *output, TAC* tac)
+{
+	fprintf(output, "\t.%s\n", tac->res->text);
+}
+
+void gen_jump(FILE *output, TAC* tac)
+{
+	fprintf(output, "\tjmp\t.%s\n", tac->res->text);
+}
+
+void gen_label(FILE *output, TAC* tac)
+{
+	fprintf(output, ".%s:\n", tac->res->text);
 }
 
 void gen_assembly(TAC*node, FILE* output, AST *root){
@@ -574,8 +629,8 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 		fprintf(stderr, "("); 
 		switch(tac->type)
 		{
-			case TAC_SYMBOL: printTacInfo("TAC_SYMBOL", tac) ; 
-				break;
+			//case TAC_SYMBOL: printTacInfo("TAC_SYMBOL", tac) ; 
+			//	break;
 
 			case TAC_ADD: printTacInfo("TAC_ADD", tac);
 						  gen_numeric_expr(output, tac); 
@@ -594,15 +649,19 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 				break;
 
 			case TAC_LT: printTacInfo("TAC_LT", tac); 
+						 gen_bool(output, tac);
 				break;
 
 			case TAC_GT: printTacInfo("TAC_GT", tac); 
+						 gen_bool(output, tac);
 				break;
 
 			case TAC_LE: printTacInfo("TAC_LE", tac); 
+						 gen_bool(output, tac);
 				break;
 
 			case TAC_GE: printTacInfo("TAC_GE", tac); 
+						 gen_bool(output, tac);
 				break;
 
 			case TAC_EQ: printTacInfo("TAC_EQ", tac); 
@@ -639,13 +698,14 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 							 gen_vec_rd(output, tac, root);
 				break;
 
-			case TAC_WHILE: printTacInfo("TAC_WHILE", tac); 
-				break;
+			//case TAC_WHILE: printTacInfo("TAC_WHILE", tac); 
+			//	break;
 
 			case TAC_READ: printTacInfo("TAC_READ", tac); 
 				break;
 
 			case TAC_LABEL: printTacInfo("TAC_LABEL", tac); 
+							gen_label(output, tac);
 				break;
 
 			case TAC_FUNCALL: printTacInfo("TAC_FUNCALL", tac); 
@@ -655,9 +715,11 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 				break;
 
 			case TAC_IFZ: printTacInfo("TAC_IFZ", tac); 
+						  gen_if(output, tac);
 				break;
 
 			case TAC_JUMP: printTacInfo("TAC_JUMP", tac); 
+						   gen_jump(output, tac);
 				break;
 
 			case TAC_CALL: printTacInfo("TAC_CALL", tac); 

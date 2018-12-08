@@ -7,11 +7,11 @@
 	.size	x, 4
 x:
 	.long	2
-	.globl	xx
+	.globl	b
 	.align 4
-	.type	xx, @object
-	.size	xx, 4
-xx:
+	.type	b, @object
+	.size	b, 4
+b:
 	.long	3
 	.text
 	.globl	main
@@ -24,15 +24,15 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-
-	movl	x(%rip), %edx
-	movl	xx(%rip), %eax
-	cmpl	%eax, %edx
-	jne	.L2
-	
-	movl	$0, x(%rip)
+	jmp	.L2
+.L3:
+	movl	x(%rip), %eax
+	subl	$1, %eax
+	movl	%eax, x(%rip)
 .L2:
-
+	movl	x(%rip), %eax
+	cmpl	$1, %eax
+	jg	.L3
 	movl	$0, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
