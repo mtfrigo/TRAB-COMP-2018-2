@@ -13,35 +13,40 @@ x:
 	.size	b, 4
 b:
 	.long	3
-	.section	.rodata
-.LC0:
-	.string	"%d"
 	.text
+	.globl	ff
+	.type	ff, @function
+ff:
+	pushq	%rbp
+	movq	%rsp, %rbp
+
+	movl	%edi, -4(%rbp)
+
+	movl	$3, %eax
+
+	popq	%rbp
+	ret
+	.cfi_endproc
+
 	.globl	main
 	.type	main, @function
 main:
-.LFB0:
+.LFB1:
 	.cfi_startproc
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
+
 	movl	x(%rip), %eax
-	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
+	movl	%eax, %edi
+	call	ff
+	movl	%eax, x(%rip)
+	
 	movl	$0, %eax
-	call	__isoc99_scanf@PLT
-	movl	$123, %esi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movl	$0, %eax
+
 	popq	%rbp
-	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE0:
+.LFE1:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 7.3.0-16ubuntu3) 7.3.0"
 	.section	.note.GNU-stack,"",@progbits

@@ -4,7 +4,7 @@ int b = 3;
 
 int main () {
 
-    while (x >= 2) {
-        x = x - 1;
-    }
+   scanf("%d", x);
+   printf("%d", 123);
+
 }

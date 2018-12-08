@@ -9,6 +9,8 @@
 #define RBP "rbp"
 #define RETURN_REGISTER "eax"
 
+char fun_reg[6][6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
+
 void printTacInfo(char *type, TAC *tac)
 {
 	fprintf(stderr, "%s; \tres: %s ; \top1: %s ; \top2: %s", 
@@ -74,14 +76,28 @@ void gen_beginfun(FILE* output, TAC *tac)
 	//needed?
 	fprintf(output, "\t.cfi_startproc\n");
 	fprintf(output, "\tpushq\t%%%s \n", RBP);
+	fprintf(output, "\tmovq\t%%rsp, %%rbp\n");
 
 	fprintf(output, "\n");
+}
+
+void gen_return(FILE* output, TAC *tac)
+{
+	if(tac->op1->isLiteral)
+		fprintf(output, "\tmovl\t$%s, %%%s \n", tac->op1->text, RETURN_REGISTER);
+	else
+		fprintf(output, "\tmovl\t%s(%%rip), %%%s \n", tac->op1->text, RETURN_REGISTER);
+
+	
+	fprintf(output, "\n");
+
+	//TODO implementar return caso seja vetor!!
 }
 
 void gen_endfun(FILE* output, TAC *tac)
 {
 
-	fprintf(output, "\tmovl\t$%d, %%%s \n", 0, RETURN_REGISTER);
+	//fprintf(output, "\tmovl\t$%d, %%%s \n", 0, RETURN_REGISTER);
 
 	fprintf(output, "\tpopq\t%%%s \n", RBP);
 	
@@ -379,6 +395,37 @@ void get_temps(FILE* output, AST *root)
 
 }
 
+void get_param(FILE* output, AST *node, AST *root)
+{
+	int i = 0;
+
+	if(node == 0)
+		return;
+
+	if(node->type == AST_FUNC_DEC){
+
+		AST *pnode = node->son[1];
+
+		while(pnode)
+		{
+			fprintf(output, "%s:\n", pnode->son[0]->symbol->text);
+
+			if(pnode->son[0]->type == AST_INT_TYPE)
+			{
+				fprintf(output, "\t.long\t%d\n", 0);
+			}
+
+			pnode = pnode->son[1];
+		}
+	}
+
+
+	for (i=0; i<MAX_SONS; i++){
+		get_param(output, node->son[i], root);
+	}
+}
+
+
 void get_print_parameters(FILE* output, AST *node, AST *root, int *count)
 {
 	int i = 0;
@@ -437,7 +484,7 @@ void gen_print(FILE *output, TAC *tac, AST* root)
 {
 
 	//if(atoi(tac->op2->text) == 1)
-		fprintf(output, "\tmovq\t%%rsp, %%rbp\n");
+		
 
 	if(tac->node->son[0]->type == AST_STRING)
 	{
@@ -603,6 +650,39 @@ void gen_label(FILE *output, TAC* tac)
 	fprintf(output, ".%s:\n", tac->res->text);
 }
 
+void gen_funcall(FILE *output, TAC* tac)
+{
+	fprintf(output, "\tcall\t%s\n", tac->op1->text);
+
+	fprintf(output, "\tmovl\t%%eax, %s(%%rip)\n", tac->res->text);
+
+	fprintf(output, "\n");
+}
+
+void gen_arg(FILE *output, TAC* tac)
+{
+	if(tac->res->isLiteral)
+	{
+		fprintf(output, "\tmovl\t$%s, %%%s\n", tac->res->text, fun_reg[atoi(tac->op2->text)-1]);
+	}
+	else
+	{
+		fprintf(output, "\tmovl\t%s(%%rip), %%%s\n", tac->res->text, fun_reg[atoi(tac->op2->text)-1]);
+	}
+	
+}
+
+void gen_param(FILE *output, TAC* tac, AST *root)
+{
+	int byte_size = 4;
+
+	fprintf(output, "\tmovl\t%%%s, %s(%%rip)\n", fun_reg[atoi(tac->op2->text)-1], tac->res->text);
+
+}
+
+
+
+
 void gen_assembly(TAC*node, FILE* output, AST *root){
 
     fprintf(stderr, "INITIALIZED GEN\n");
@@ -612,6 +692,8 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 	get_declarations(output, root);
 	//WRITE ALL TEMP VARIABLES
 	get_temps(output, root);
+	//WRITE ALL PARAMS
+	get_param(output, root, root);
 	//WRITE ALL STRINGS IN HASH
 	int count = 0;
 	fprintf(output, "\t.section\t.rodata\n");
@@ -668,14 +750,12 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 						 gen_bool(output, tac);
 				break;
 
-			case TAC_OR: printTacInfo("TAC_OR", tac); 
-				break;
-
-			case TAC_AND: printTacInfo("TAC_AND", tac); 
-				break;
-
 			case TAC_BEGINFUN:  printTacInfo("TAC_BEGINFUN", tac); 
 								gen_beginfun(output, tac);
+				break;
+
+			case TAC_RETURN: printTacInfo("TAC_RETURN", tac); 
+							 gen_return(output, tac);
 				break;
 
 			case TAC_ENDFUN: printTacInfo("TAC_ENDFUN", tac);
@@ -701,17 +781,8 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 			//case TAC_WHILE: printTacInfo("TAC_WHILE", tac); 
 			//	break;
 
-			case TAC_READ: printTacInfo("TAC_READ", tac); 
-				break;
-
 			case TAC_LABEL: printTacInfo("TAC_LABEL", tac); 
 							gen_label(output, tac);
-				break;
-
-			case TAC_FUNCALL: printTacInfo("TAC_FUNCALL", tac); 
-				break;
-
-			case TAC_RETURN: printTacInfo("TAC_RETURN", tac); 
 				break;
 
 			case TAC_IFZ: printTacInfo("TAC_IFZ", tac); 
@@ -722,10 +793,33 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 						   gen_jump(output, tac);
 				break;
 
+			case TAC_ARG_LIST: printTacInfo("TAC_ARG_LIST", tac); 
+							   gen_arg(output, tac);
+				break;
+
+			case TAC_PARAM_LIST: printTacInfo("TAC_PARAM_LIST", tac); 
+								gen_param(output, tac, root);
+				break;
+
+			case TAC_FUNCALL: printTacInfo("TAC_FUNCALL", tac); 
+							  gen_funcall(output, tac);
+				break;
+
+			// FALTA!
+
+			case TAC_OR: printTacInfo("TAC_OR", tac); 
+				break;
+
+			case TAC_AND: printTacInfo("TAC_AND", tac); 
+				break;
+
 			case TAC_CALL: printTacInfo("TAC_CALL", tac); 
 				break;
 
-			case TAC_ARG: printTacInfo("TAC_ARG", tac); 
+			//case TAC_ARG: printTacInfo("TAC_ARG", tac); 
+			//	break;
+
+			case TAC_READ: printTacInfo("TAC_READ", tac); 
 				break;
 
 			default: fprintf(stderr, "TAC_UNKNOWN"); 

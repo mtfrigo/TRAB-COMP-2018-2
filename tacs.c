@@ -492,13 +492,40 @@ TAC* makeFundec(AST* node,TAC* result0, TAC* result1, TAC* result2)
     TAC* beginTac = 0;
     TAC* endTac = 0;
     TAC* firstJoin = 0;
+    TAC* endJoin = 0;
     TAC* paramTac = 0;
     TAC* resultParam = 0;
 
     beginTac = tacCreate(TAC_BEGINFUN, result0?result0->res:0, 0,  0, node);
     endTac = tacCreate(TAC_ENDFUN, result0?result0->res:0, 0, 0, node);
 
-    firstJoin = tacJoin(tacJoin(tacJoin(beginTac, result1), result2 ), endTac);
+    //firstJoin = tacJoin(tacJoin(tacJoin(beginTac, result1), result2 ), endTac);
+
+    firstJoin =  tacJoin(beginTac, result1);
+    endJoin   = tacJoin(result2, endTac);
+
+    AST* aux = node;
+
+    while(aux->son[1])
+    {
+        count++;
+        aux = aux->son[1];    
+    }
+
+    while(node->son[1])
+    {
+        node = node->son[1];    
+
+        sprintf(countStr, "%d", count);
+        HASH_NODE* countNode = hashInsert(SYMBOL_SCALAR, countStr);
+
+        resultParam = tacGenerate(node->son[0]);
+        paramTac = tacCreate(TAC_PARAM_LIST, resultParam?resultParam->res:0, result0?result0->res:0, countNode, node);
+        endJoin = tacJoin(paramTac, endJoin);
+        count--;
+
+    }
+
 
     while(node->son[1])
     {
@@ -510,8 +537,10 @@ TAC* makeFundec(AST* node,TAC* result0, TAC* result1, TAC* result2)
 
         resultParam = tacGenerate(node->son[0]);
         paramTac = tacCreate(TAC_PARAM_LIST, resultParam?resultParam->res:0, result0?result0->res:0, countNode, node);
-        tacJoin(paramTac, firstJoin);
+        endJoin = tacJoin(paramTac, endJoin);
     }
+
+    firstJoin = tacJoin(firstJoin, endJoin);
 
     return firstJoin;
 }

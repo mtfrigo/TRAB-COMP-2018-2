@@ -1,13 +1,16 @@
 int x = 5;
 int xxq2p: 1 5;
 
+int ffdint a, int lb{
+    x = a + l;
+    return x;
+}
+
 int main db {
 
-    x = xxq1p;
-
-    while d x > 2 b {
-        x = x - 1;
-    };
+    x = ffd 1, 55b;
 
     print x;
+
+    return 1;
 }
