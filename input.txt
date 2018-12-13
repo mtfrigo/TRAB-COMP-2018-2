@@ -1,7 +1,8 @@
 char xxq4p: 'a' 'n' 'c' 'm';
 
-int x = 5;
+int x = 7;
 int c = 2;
+
 
 int ff d int lol, int lal b {
     return lol/lal;
@@ -9,8 +10,26 @@ int ff d int lol, int lal b {
 
 int main db {
 
-    x = ff d x, c b;
-    print x;
+    if d x > 5 b then {
+        print "Xis maior que 5";
+    } 
+    else {
+        print "Xis menor que 5";
+    } ;
+       
+
+    while d x > 0 b {
+        x = x - 1;
+        print x;
+    };
+
+    c = ff d 10, 5 b;
+
+    print "Valor de c:", c;
+
+    xxq3p = 'y';
+
+    print xxq0p, xxq1p, xxq2p, xxq3p;
 
     return 1;
 }

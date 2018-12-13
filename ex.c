@@ -4,7 +4,7 @@ int b = 3;
 
 int main () {
 
-   x = x / b;
+   x = x - b;
 
    printf("%d\n", x);
 

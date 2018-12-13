@@ -534,9 +534,12 @@ void gen_numeric_expr(FILE *output, TAC *tac)
     }
 
 	if(tac->type == TAC_DIV) 
+	{	
 		fprintf(output, "\tcltd\n");
-
-    fprintf(output, "\t%s\t%%ebx\n", op);
+    	fprintf(output, "\t%s\t%%ebx\n", op);
+	}
+	else
+		fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
 	
     fprintf(output, "\tmovl\t%%eax, %s(%%rip)\n", tac->res->text);
 
