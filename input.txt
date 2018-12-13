@@ -1,15 +1,15 @@
-int x = 5;
-int xxq2p: 1 5;
+char xxq4p: 'a' 'n' 'c' 'm';
 
-int ffdint a, int lb{
-    x = a + l;
-    return x;
+int x = 5;
+int c = 2;
+
+int ff d int lol, int lal b {
+    return lol/lal;
 }
 
 int main db {
 
-    x = ffd 1, 55b;
-
+    x = ff d x, c b;
     print x;
 
     return 1;

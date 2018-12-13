@@ -122,8 +122,8 @@ void gen_var_attr(FILE* output, TAC *tac, AST* root)
 		}
 		else{
 
-			fprintf(output, "\tmovzbl\t$%s(%%rip), %%%s \n", tac->op2->text, RETURN_REGISTER);
-			fprintf(output, "\tmovl\t%%%s, %s(%%rip) \n", "al",  tac->res->text);
+			fprintf(output, "\tmovzbl\t%s(%%rip), %%%s \n", tac->op2->text, RETURN_REGISTER);
+			fprintf(output, "\tmovl\t%%%s, %s(%%rip) \n", "eax",  tac->res->text);
 		}
 
 	}
@@ -243,8 +243,6 @@ void gen_vec_declaration(FILE* output, AST *node)
 		while(node->son[0])
 		{
 			char auxChar;
-
-			
 			if(type == AST_CHAR_TYPE)
 			{
 				if(node->son[0]->type == AST_LIT_LIST)
@@ -350,30 +348,6 @@ void get_declarations(FILE* output, AST *node)
 
 }
 
-void get_strings(FILE* output, AST *root)
-{
-	HASH_NODE *hnode;
-
-	fprintf(output, "\t.section\t.rodata\n");
-
-    int i;
-	int count = 0;
-
-    for (i = 0; i < HASH_SIZE; ++i){
-        for (hnode = Table[i]; hnode; hnode = hnode->next){
-			if(hnode->type == LIT_STRING)
-			{
-				hnode->assemblyLabel = count;
-				fprintf(output, ".LC%d:\n", count);
-				fprintf(output, "\t.string\t\"%s\"\n", hnode->text);
-				count++;
-			}
-        }
-    }
-
-	fprintf(output, "\n");
-}
-
 void get_temps(FILE* output, AST *root)
 {
 	HASH_NODE *hnode;
@@ -432,48 +406,31 @@ void get_print_parameters(FILE* output, AST *node, AST *root, int *count)
 
 	if(node == 0)
 		return;
-
-
 	if(node->type == AST_PRINT){
 
 		AST *pnode = node->son[0];
+
+		//fprintf(output, ".LC%d:\n", *count);
 
 		while(pnode)
 		{
 			fprintf(output, ".LC%d:\n", *count);
 
-			
-			//CASO PARAMETRO NAO FOR UMA STRING EH NECESSARIO SABER O TIPO DELA
-			if(pnode->son[0]->type != AST_STRING)
+			//CASO PARAMETRO NAO FOR UMA STRING JA EXISTEM AS CONSTANTE PRA PRINT
+			if(pnode->son[0]->type == AST_STRING)
 			{
-				AST *dec = findDecNode(pnode->son[0]->symbol->text, root);
-
-				if(dec->son[0]->type == AST_INT_TYPE)
-				{
-					fprintf(output, "\t.string\t\"%%d\\n\"\n");
-				}
-				else if(dec->son[0]->type == AST_FLOAT_TYPE)
-				{
-					fprintf(output, "\t.string\t\"%%f\\n\"\n");
-				}
-				else if(dec->son[0]->type == AST_CHAR_TYPE)
-				{
-					fprintf(output, "\t.string\t\"%%c\\n\"\n");
-				}
-			}
-			else
-			{
+				printf("tipo string %d\n", pnode->son[0]->type);
 				fprintf(output, "\t.string\t\"%s\"\n", pnode->son[0]->symbol->text);
-			}
 
-			pnode->son[0]->symbol->assemblyLabel = *count;
+				pnode->son[0]->symbol->assemblyLabel = *count;
+
+			}
 			
 			pnode = pnode->son[1];
 			*count = *count + 1;;
 			fprintf(output, "\n");
 		}
 	}
-
 
 	for (i=0; i<MAX_SONS; i++){
 		get_print_parameters(output, node->son[i], root, count);
@@ -482,24 +439,34 @@ void get_print_parameters(FILE* output, AST *node, AST *root, int *count)
 
 void gen_print(FILE *output, TAC *tac, AST* root)
 {
-
-	//if(atoi(tac->op2->text) == 1)
-		
-
 	if(tac->node->son[0]->type == AST_STRING)
 	{
 		fprintf(output, "\tleaq\t.LC%d(%%rip), %%rdi\n", tac->res->assemblyLabel);
 		fprintf(output, "\tcall\tputs@PLT\n");
 	}
+	//todas expressoes numericas!!!!
+	else if(tac->node->son[0]->type == AST_ADD || tac->node->son[0]->type == AST_SUB || tac->node->son[0]->type == AST_DIV || tac->node->son[0]->type == AST_MUL)
+	{
+		fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->res->text);
+		fprintf(output, "\tmovl\t%%eax, %%esi\n");
+		fprintf(output, "\tleaq\t.printInt(%%rip), %%rdi\n");
+		fprintf(output, "\tmovl\t$0, %%eax\n");
+		fprintf(output, "\tcall\tprintf@PLT\n");
+	}
 	else 
 	{
-		AST *dec = findDecNode(tac->res->text, root);
+		AST *dec = 0 ;
+
+		if(tac->node->son[0]->type == AST_VEC)
+			dec = findDecNode(tac->node->son[0]->son[0]->symbol->text, root);
+		else
+			dec = findDecNode(tac->res->text, root);
 
 		if(dec->son[0]->type == AST_INT_TYPE)
 		{
 			fprintf(output, "\tmovl\t%s(%%rip), %%eax\n", tac->res->text);
 			fprintf(output, "\tmovl\t%%eax, %%esi\n");
-			fprintf(output, "\tleaq\t.LC%d(%%rip), %%rdi\n", tac->res->assemblyLabel);
+			fprintf(output, "\tleaq\t.printInt(%%rip), %%rdi\n");
 			fprintf(output, "\tmovl\t$0, %%eax\n");
 			fprintf(output, "\tcall\tprintf@PLT\n");
 		}
@@ -509,7 +476,7 @@ void gen_print(FILE *output, TAC *tac, AST* root)
 			fprintf(output, "\tmovsbl\t%%al, %%eax\n");
 			fprintf(output, "\tmovl\t%%eax, %%esi\n");
 
-			fprintf(output, "\tleaq\t.LC%d(%%rip), %%rdi\n", tac->res->assemblyLabel);
+			fprintf(output, "\tleaq\t.printChar(%%rip), %%rdi\n");
 			fprintf(output, "\tmovl\t$0, %%eax\n");
 			fprintf(output, "\tcall\tprintf@PLT\n");
 		}
@@ -517,7 +484,7 @@ void gen_print(FILE *output, TAC *tac, AST* root)
 		{
 			fprintf(output, "\tmovss\t%s(%%rip), %%xmm0\n", tac->res->text);
 			fprintf(output, "\tcvtss2sd\t%%xmm0, %%xmm0\n");
-			fprintf(output, "\tleaq\t.LC%d(%%rip), %%rdi\n", tac->res->assemblyLabel);
+			fprintf(output, "\tleaq\t.printFloat%d(%%rip), %%rdi\n");
 			fprintf(output, "\tmovl\t$1, %%eax\n");
 			fprintf(output, "\tcall\tprintf@PLT\n");
 		}
@@ -525,7 +492,6 @@ void gen_print(FILE *output, TAC *tac, AST* root)
 	}
 
 	fprintf(output, "\n");
-
 //	printf("String: %s; Label: .LC%d \n", tac->res->text, tac->res->assemblyLabel);;
 
 }
@@ -567,7 +533,11 @@ void gen_numeric_expr(FILE *output, TAC *tac)
         fprintf(output, "\tmovl\t$%s, %%ebx\n", tac->op2->text);
     }
 
-    fprintf(output, "\t%s\t%%ebx, %%eax\n", op);
+	if(tac->type == TAC_DIV) 
+		fprintf(output, "\tcltd\n");
+
+    fprintf(output, "\t%s\t%%ebx\n", op);
+	
     fprintf(output, "\tmovl\t%%eax, %s(%%rip)\n", tac->res->text);
 
 	fprintf(output, "\n");
@@ -696,10 +666,19 @@ void gen_assembly(TAC*node, FILE* output, AST *root){
 	get_param(output, root, root);
 	//WRITE ALL STRINGS IN HASH
 	int count = 0;
-	fprintf(output, "\t.section\t.rodata\n");
+	fprintf(output, "\t.section\t.rodata\n\n");
+
+	fprintf(output, ".printChar:\n");
+	fprintf(output, "\t.string \"%%c\\n\"\n");
+
+	fprintf(output, ".printInt:\n");
+	fprintf(output, "\t.string \"%%d\\n\"\n");
+
+	fprintf(output, ".printFloat:\n");
+	fprintf(output, "\t.string \"%%f\\n\"\n");
+
 	get_print_parameters(output, root, root, &count);
 	
-
 	fprintf(output, "\t.text\n");
 
 	TAC *tac;

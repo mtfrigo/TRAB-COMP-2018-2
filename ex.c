@@ -1,10 +1,11 @@
 #include <stdio.h>
-int x = 2;
+int x = 6;
 int b = 3;
 
 int main () {
 
-   scanf("%d", x);
-   printf("%d", 123);
+   x = x / b;
+
+   printf("%d\n", x);
 
 }

@@ -6,7 +6,7 @@
 	.type	x, @object
 	.size	x, 4
 x:
-	.long	2
+	.long	6
 	.globl	b
 	.align 4
 	.type	b, @object
@@ -15,7 +15,7 @@ b:
 	.long	3
 	.section	.rodata
 .LC0:
-	.string	"%d"
+	.string	"%d\n"
 	.text
 	.globl	main
 	.type	main, @function
@@ -28,11 +28,12 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	movl	x(%rip), %eax
+	movl	b(%rip), %ecx
+	cltd
+	idivl	%ecx
+	movl	%eax, x(%rip)
+	movl	x(%rip), %eax
 	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	__isoc99_scanf@PLT
-	movl	$123, %esi
 	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
